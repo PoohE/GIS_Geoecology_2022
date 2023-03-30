@@ -1,0 +1,4 @@
+resize( 1 lanczos 640 480 0 1 0 )
+settings( 0 1 0 0 1 0 0 )
+output_path( C:\Users\kolbo\Documents\!!!_Word_Press\SPATIAL_GEOEOCOLY\Pict_1_1 )
+output( png 0 6 )

@@ -1,0 +1,803 @@
+<!DOCTYPE html> 
+<html>
+<head>
+      <title>landsatindex</title>
+      <link rel="stylesheet" href="style.css">
+</head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+figure {
+    width: 50%; /* Ширина если надо расположить 2 картинки в ряд*/
+    float: left; /* Выстраиваем элементы по горизонтали */
+    margin: 0 0 0 0%; /* Отступ слева */
+   text-indent: 0px; /* убираем отступ для картинки как ни странно */
+   /* background: #f0f0f0; /* Цвет фона */
+    border-radius: 1px; /* Радиус скругления */
+    padding: 01%; /* Поля */
+   }
+   figure:first-child {
+    margin-left: 0; /* Убираем отступ для первого элемента */
+   }
+
+picture {
+ width: 33%; /* Ширина если надо расположить 3 картинки в ряд*/
+    float: left; /* Выстраиваем элементы по горизонтали */
+    margin: 0 0 0 0%; /* Отступ слева */
+   text-indent: 0px; /* убираем отступ для картинки как ни странно */
+   /* background: #f0f0f0; /* Цвет фона */
+    border-radius: 1px; /* Радиус скругления */
+    padding: 0%; /* Поля */
+}
+picture:first-child {
+    margin-left: 0; /* Убираем отступ для первого элемента */
+   }
+
+     image {
+    width: 100%; /* Ширина если надо расположить 1 картинки в ряд*/
+    float: left; /* Выстраиваем элементы по горизонтали */
+    margin: 0 0 0 0%; /* Отступ слева */
+   text-indent: 0px; /* убираем отступ для картинки как ни странно */
+   /* background: #f0f0f0; /* Цвет фона */
+    border-radius: 1px; /* Радиус скругления */
+    padding: 1%; /* Поля */
+   }
+
+</style>
+</head>
+<body>
+
+		<div class="sidenav">
+
+<p><a href="#h1">III. ГЕОМОРФОМЕТРИЯ И СОВРЕМЕННЫЕ ПОДХОДЫ К ЛАНДШАФТНОМУ СИНТЕЗУ</p>
+
+<p><a href="#h2">14. МОДЕЛИРОВАНИЕ ЛАНДШАФТНОГО ПОКРОВА И ЗЕМЛЕПОЛЬЗОВАНИЯ СРЕДСТВАМИ GIS</a></p>
+
+<a href="#h3_1">14.1. Краткая характеристика и параметры снимков серии Landsat</a>
+    <a href="#h3_2">14.2. Загрузка и визуализация Landsat в ГИС SAGA</a>
+    <a href="#h3_3">14.3. Композитные сочетания Landsat</a>
+	 <a href="#h3_4">14.4. Вегетационные индексы</a>
+	 <a href="#h3_5">14.5. Компонентные и ландшафтные индексы</a>
+    
+
+</div class="sidenav">
+
+
+<div class="content">
+
+<h1 id="h1">III. ГЕОМОРФОМЕТРИЯ И СОВРЕМЕННЫЕ ПОДХОДЫ К ЛАНДШАФТНОМУ СИНТЕЗУ</h1>
+
+  <h2 id="h2">14. МОДЕЛИРОВАНИЕ ЛАНДШАФТНОГО ПОКРОВА И ЗЕМЛЕПОЛЬЗОВАНИЯ СРЕДСТВАМИ GIS</h2>
+
+  <h3 id="h3_1">14.1. Краткая характеристика и параметры снимков серии Landsat </h3>
+
+<p>Снимки серии <strong>Landsat</strong> представляют собой уникальный источник данных о ландшафтном покрове и землепользовании поверхности планеты, прежде всего по причине огромного объема накопленных данных и возможности сравнения снимков, полученными летательными аппаратами начиная с 1972 г. XX века, когда на орбите Земли начал функционировать сенсор <span class="monospace">Landsat 1</span>. Спутники сменяли друг друга (<span class="monospace">Landsat 2</span> - 1975, 3 - 1978, 4 - 1982, 5 - 1984, 7 - 1999). <span class="monospace">Landsat 8</span>, запущенный в феврале 2013 года и являющийся последним в серии, производит высококачественные снимки Земли для любой точки планеты каждые 16 дней  (разрешение в пикселях <span class="greencursiv">28,5 метра</span> плюс дополнительный диапазон с разрешением <span class="greencursiv">15 метров</span>). Каждый последующий сенсор обладал более совершенной техникой, что позволяло увеличивать число каналов (8 - <span class="monospace">Landsat 7</span>, и 11 - <span class="monospace">Landsat 8</span>). Снимки предоставляются всем желающим в качестве бесплатной услуги через Геологическую службу США (USGS). Отснятый полосами (шириной <span class="greencursiv">185 км</span>) материал разделяется для удобства пользователя на "сцены" прямоугольной формы.</p>
+
+<p>В геоэкологическом моделировании для определения мозаики землепользования и классификации растительного покрова наиболее часто используются данных двух последних сенсоров - <span class="monospace">Landsat 5, Landsat 7 и  Landsat 8</span>, поскольку они имеют относительно близкие характеристики, и, следовательно, поставляемые ими снимки могут быть использованы для сравнения и анализа состояния и среднемноголетней динамики как природных, так и антропогенных экосистем. Английский термин <strong>Landuse/Landcover</strong>  предполагает, что сенсоры спутников получает сигнал от любых объектов на поверхности земли, поэтому перевод "ландшафтный покров" не представляется удачным: к этой категории можно отнести все то, что не является напрямую видом землепользования (т.е., не представляется собой урбанизированную "ткань", сельскохозяйственные угодья, горные выработки и т.д.). Но и называть <strong>Landcover</strong> "растительным покровом" также неправомерно, потому что не любой естественный объект на поверхности земли является "растительностью": по снимкам <span class="monospace">Landsat</span> дешифрируются лишенные какого-либо почвенно-растительного покрова пустыни и скальные поверхности, ледники и вечные снега, озера и реки (акватории). Таким образом, <strong>Landcover</strong>,  скорее, "естественный покров", и если уж принимать термин "ландшафтный покров" - то исключительно с пониманием его общего и упрощенного значения.</p>
+
+<p>На <a href="#landsat_7_8.png">Рис. 14.1</a> показана разница между каналами (band) <span class="monospace">Landsat 7</span> и <span class="monospace">Landsat 8</span>. Если для <span class="monospace">Landsat 7</span> каналы <span class="cursive">Blue</span>, <span class="cursive">Green</span> и <span class="cursive">Red</span> являются каналами 1, 2 и 3 соответственно,  то в <span class="monospace">Landsat 8</span> эти каналы маркированы как 2, 3 и 4. Инфракрасные полосы составляют 4, 5, 7 для <span class="monospace">Landsat 7</span> и 5, 6, 7 для <span class="monospace">Landsat 8</span>. Для всех спутников полоса 8 является каналом высокого разрешения, охватывающим широкий спектральный диапазон.</p>
+
+<a id="landsat_7_8.png"><img src="Pict_3_14/landsat_7_8.png" width="85%" height="relative"></a>
+<br><span class="imgtitle">Рис. 14.1 Сравнительные характеристики спектров сенсоров Landsat 7, 8 и Sentinel
+
+<p>После загрузки каждая спектральный канал отображается как отдельный файл и может отображаться отдельно или в виде  композитного изображения. Подробные физические характеристики каналов  <span class="monospace">Landsat 5</span>, <span class="monospace">Landsat 7</span> и <span class="monospace">Landsat 8</span> приведены в  <a href="#landsat_5">Таблице 14.1</a>, <a href="#landsat_7">Таблице 14.2</a>  и <a href="#landsat_8">Таблице 14.3</a>.</p>
+
+<br><span class="imgtitle">Таблица 14.1 Физические характеристики Landsat 5</p>
+<a id="landsat_5"><img src="Pict_3_14/landsat_5.png" width="85%" height="relative"></a>
+
+<br><span class="imgtitle">Таблица 14.2 Физические характеристики Landsat 7</p>
+<a id="landsat_7"><img src="Pict_3_14/landsat_7.png" width="85%" height="relative"></a>
+
+<p>Разрешение съемки <span class="monospace">Landsat-5</span> составляет <span class="greencursiv">30 м</span>   для всех каналов, кроме теплового (В6) с разрешением 120 м. Разрешение съемки <span class="monospace">Landsat-7</span> - <span class="greencursiv">30 м</span> для всех каналов, кроме теплового (В6) с разрешением <span class="greencursiv">60 м</span>, и панхроматического (B8) с разрешением <span class="greencursiv">15 м</span>. Разрешение съемки <span class="monospace">Landsat-8</span> - <span class="greencursiv">30 м</span> для всех каналов, кроме теплового (В10, В11) с разрешением <span class="greencursiv">100 м</span>, и панхроматического (В8) с разрешением <span class="greencursiv">15 м</span>.  Исходное разрешение тепловых каналов (<span class="greencursiv">100 м</span>, <span class="greencursiv">120 м</span>) в продуктах <span class="monospace">Landsat</span>, доступных для скачивания, приведено к разрешению <span class="greencursiv">30 м</span>.</p>
+
+<a id="landsat_8"><span class="imgtitle">Таблица 14.3 Физические характеристики Landsat 8</span></a></p>
+
+<div class="table">
+	<table id="customers">
+      <table border="1">
+
+    <tr>
+    <th>Номер канала</th>
+    <th>Name</th>
+    <th>Наименование</th>
+    <th>Длина волны (мкм)</th>
+    <th>Разрешение (м)</th>
+ </tr>
+   <tr>
+    <td>Band 1</td>
+    <td>Coastal aerosol</td>
+    <td>Фиолетовый-темно-синий</td>
+    <td>0.43 - 0.45</td>
+    <td>30</td>
+ </tr>
+ <tr>
+ 	</tr>
+    <tr>
+    <td>Band 2</td>
+    <td>Blue</td>
+    <td>Голубой</td>
+    <td>0.45 - 0.51</td>
+    <td>30</td></tr>
+ <tr>
+ 	</tr>
+    <tr>
+    <td>Band 3</td>
+    <td>Green</td>
+    <td>Зеленый</td>
+    <td>0.53 - 0.59</td>
+    <td>30</td></tr>
+ <tr>
+ 	</tr>
+    <tr>
+    <td>Band 4</td>
+    <td>Red</td>
+    <td>Красный</td>
+    <td>0.64 - 0.67</td>
+    <td>30</td></tr>
+ <tr>
+ 	</tr>
+    <tr>
+    <td>Band 5</td>
+    <td>Near Infrared (NIR)</td>
+    <td>Ближний инфракрасный</td>
+    <td>0.85 - 0.88</td>
+    <td>30</td></tr>
+ <tr>
+ 	</tr>
+    <tr>
+    <td>Band 6</td>
+    <td>SWIR 1</td>
+    <td>Коротковолновый инфракрасный 1</td>
+    <td>1.57 - 1.65</td>
+    <td>30</td></tr>
+ <tr>
+ 	</tr>
+    <tr>
+    <td>Band 7</td>
+    <td>SWIR 2</td>
+    <td>Коротковолновый инфракрасный 2</td>
+    <td>2.11 - 2.29</td>
+    <td>30</td></tr>
+ <tr>
+ 	</tr>
+    <tr>
+    <td>Band 8</td>
+    <td>Panchromatic</td>
+    <td>Панхроматический</td>
+    <td>0.50 - 0.68</td>
+    <td>15</td></tr>
+ <tr>
+ 	</tr>
+    <tr>
+    <td>Band 9</td>
+    <td>Cirrus</td>
+    <td>Перистые облака</td>
+    <td>1.36 - 1.38</td>
+    <td>30</td></tr>
+ <tr>
+ 	</tr>
+    <tr>
+    <td>Band 10</td>
+    <td>Thermal Infrared (TIRS) 1</td>
+    <td>Тепловой</td>
+    <td>10.60 - 11.19</td>
+    <td>100</td></tr>
+ <tr>
+ 	</tr>
+    <tr>
+    <td>Band 11</td>
+    <td>Thermal Infrared (TIRS) 2</td>
+    <td>Тепловой</td>
+    <td>11.50 - 12.51 </td>
+    <td>100</td></tr>
+ <tr>
+
+</table>
+
+<br>
+
+
+<h3 id="h3_2">14.2. Загрузка и визуализация Landsat в ГИС SAGA</h3>
+
+<p>В настоящее время все большее число порталов поставляют космические снимки <span class="monospace">Landsat</span>, однако их "первоисточником" является порталы <strong>National Aeronautics and Space Administration (NASA) и United States Geological Survey (USGS)</strong>. Портал <strong>NASA </strong>интересен тем, что он аккумулирует и поддерживает весь комплекс научных тем, так или иначе связанных с данными <span class="monospace">Landsat</span>, о чем свидетельствует название <a href="https://landsat.gsfc.nasa.gov/data"><span class="bolditalic">Landsat Science</span></a>.</p>
+
+<a id="LandsatScience"><img src="Pict_3_14/LandsatScience.png" width="95%" height="relative"></a>
+<br><span class="imgtitle">Рис. 14.2 Внешний вид портала NASA Landsat Science</p>
+
+<p>Портал Геологической службы США  <a href="https://landlook.usgs.gov/landlook/viewer.html">USGS</a> является общепризнанным и удобным источником - <a href="https://www.usgs.gov/centers/eros/science/usgs-eros-archive-landsat-archives-landsat-8-oli-operational-land-imager-and?qt-science_center_objects=0#qt-science_center_objects">Access Data</a> архивом  снимков <span class="monospace">Landsat</span>. Существуют два подхода к выкачиванию снимков <span class="monospace">Landsat</span> из архива <strong>USGS</strong>. Один из них, с использованием Web-приложения <span class="blackbold">GloVis</span> довольно подробно и исчерпывающим образом изложен на сайте  <a href="http://gis-lab.info/qa/landsat-glovis.html"><strong>GIS-LAB</strong></a>. <span class="blackbold">GloVis</span> <a href="#Glovis">(Рис. 14.3)</a> позволяет скачать и старые снимки <span class="monospace">Landsat 4-5 TM</span> выбрав требуемую область в окне по картографической подложке и обозначив год, месяц и день в позиции <span class="cursive">Data Range</span>, а также условия облачности в позиции <span class="cursive">Cloud Cover</span>.</p>
+
+<a id="Glovis"><img src="Pict_3_14/Glovis.png" width="95%" height="relative"></a>
+<br><span class="imgtitle">Рис. 14.3 Диалоговое окно сервиса GloVis
+
+<p>Другой способ связан с использованием Web-приложения <a href="http://earthexplorer.usgs.gov/"><span class="blackbold">EarthExplorer</span></a> и программки <span class="blackbold">Bulk Download Application</span>.</p>
+
+<a id="explorer"><img src="Pict_3_14/explorer.png" width="95%" height="relative"></a>
+<br><span class="imgtitle">Рис. 14.4 Диалоговое окно сервиса EarthExplorer</p>
+
+<p>На вкладке <span class="cursive">Search Criteria</span> можно набрать (даже кириллицей!) интересующую локализацию.</p>
+
+<a id="explorerresult"><img src="Pict_3_14/explorerresult.png" width="95%" height="relative"></a>
+<br><span class="imgtitle">Рис. 14.5 Результаты поиска EarthExplorer</p>
+
+<p>В открывающемся диалоге можно выбрать необходимые продукты, в том числе архив снимков <span class="monospace">Landsat</span></p>
+
+<a id="explorer_product"><img src="Pict_3_14/explorer_product.png" width="95%" height="relative"></a>
+<br><span class="imgtitle">Рис. 14.6 Перечень продуктов EarthExplorer</p>
+
+<p>Чтобы просмотреть снимок – жмем на его изображении (иконке слева). Чтобы увидеть крупнее – переносимся в отдельное окно:  <span class="monospace">Click image to view in another window</span>. Далее <span class="monospace">Submit Standing  Request</span> (см. выше) - подписываемся на загрузку выбранной сцены: самой важной здесь для нас будет кнопка span <span class="monospace">Add to Bulk Download|Добавить в загрузку</span>. На форме выше выбираем <span class="monospace">Submit Order</span>. Затем, если ещё не установлено приложение <span class="blackbold">Bulk Download Application</span>,  на следующей форме выбираем отмеченную красным ссылку. Устанавливаем программу <span class="blackbold">BDA</span>;  регистрируемся с теми же реквизитами, что были указаны при регистрации на <span class="blackbold">EarthExplorer</span>.</p>
+
+<a id="explorerlook"><img src="Pict_3_14/explorerlook.png" width="95%" height="relative"></a>
+<br><span class="imgtitle">Рис. 14.7 Выбранный снимок в окне EarthExplorer</p>
+<br>
+
+<p>Загрузка и визуализация ДДЗ сегодня возможны в любой полнофункциональной ГИС. Однако, функция импорта в <span class="blue">SAGA GIS</span> делает работу с данными <span class="monospace">Landsat</span> простым одноэтапным процессом. Нет другого инструмента, бесплатного или коммерческого, обеспечивающего более простой способ импорта и визуализации данных <span class="monospace">Landsat</span>. Инструмент <span class="blackbold">Landsat Import with Options</span>  объединяет три отдельные функции в одно простое диалоговое окно.</p> 
+
+<div class="script">
+<b>Coordinate System|Перепроецирование</b>: данные Landsat по умолчанию находятся в <i>Северной системе координат UTM</i>, что является проблематичным для сцен южного полушария; инструмент импорта Landsat позволяет выбрать полусферу <i>UTM</i> сцены и/или географическую систему координат.<br>
+
+<b>Show a Composite|Создание композита</b>  композитный дисплей RGB:  позволяет  выбрать комбинацию для отображения и сразу назначить каналы <i>Red</i>, <i>Green</i>, <i>Blue</i>, тогда файлы откроются как композитная сцена - сочетание каналов. Можно не использовать эту опцию и экспериментировать уже в окне SAGA, перебирая различные варианты.<br>
+
+<b>Повышение контрастности</b>: при импорте выбранная комбинация каналов автоматически появится в окне отображения карты с растягиванием гистограммы; в дополнение к этому, SAGA предоставляет способ улучшить отображение изображения "на лету".<br>
+</div>
+
+<a id="sagaload_all"><img src="Pict_3_14/sagaload_all.png" width="95%" height="relative"></a>
+<br><span class="imgtitle">Рис. 14.8 Диалоговое окно Landsat Import with Options SAGA</p>
+
+<p>После загрузки все геотифы (11 каналов) <span class="monospace">Landsat 8</span> окажутся в списке данных. Теперь их можно рассматривать по отдельности и собирать необходимые композиты. Рассмотрим специфику и назначение отдельных каналов Landsat 8 (см. также <a href="#landsat_8">Табл. 14.3</a>).</p>
+
+<p><span class="backgreen">Band 1</span>: <span class="cursive">deep blues and violets|синий и фиолетовый</span> канал <span class="monospace">Landsat</span> получил наименование <span class="cursive">coastal/aerosol band|прибрежно/аэрозольный</span> в соответствии с двумя видами использования
+- отображение мелководной зоны океана и отслеживание мельчайших частиц пыли и дыма.</p> 
+
+<p>Близок к предыдущему <span class="backgreen">Band 2</span> <span class="cursive">normal blue|голубой</span> канал, иногда переводится как "синий", поскольку в английском языке не различаются эти два цвета. Результат вычитания <span class="cursive">Band 1 minus Band 2</span> используется для улавливания "глубоких голубых тонов". Многие растения производят по мере роста «поверхностный воск» (как у растущих слив или плодов инжира), который позволяет им защищаться от опасного ультрафиолета, и на соответствующих фазах вегетации этот индекс может быть показательным.</p>
+
+<div class="script_01">
+<figure>
+<a id="1_band_"><img src="Pict_3_14/1_band_.png" width="340" height="relative"></a>
+</figure>
+<figure>
+<a id="2_band_."><img src="Pict_3_14/2_band_.png" width="340" height="relative"></a>
+</figure>
+</div><br>
+
+<span class="imgtitle">Рис. 14.9 Каналы 1 и 2 в серых тонах почти неразличимы </p>
+
+<p>Каналы <span class="monospace">Landsat 8</span> - <span class="backgreen"> Band 2</span> <span class="cursive">normal blue</span>, <span class="backgreen">Band 3</span> <span class="cursive">green</span>, и <span class="backgreen">Band 4</span> <span class="cursive">red</span>: видимый голубой, видимый зеленый, видимый красный - передают часть спектра, воспринимаемую человеческим глазом. Поэтому их сочетание обычно используется для создания изображений в "видимом спектре" - итоговое изображение подобно тому, которое мы могли бы наблюдать пролетая над местностью на современном воздушном судне. Композит в натуральных цветах применяется для фиксации  землепользования и моделирования покрытий типа <strong>Land Cover</strong>.</p>
+
+<p><span class="backgreen">Band 5</span> - <span class="cursive">near infrared (NIR)</span> - ближний инфракрасный, отражается растительностью и в сочетании с другими каналами позволяет получать <b>вегетационные индексы</b> типа <span class="monospace">NDVI</span>, которые не могут быть извлечены только из видимого зеленого (<span class="backgreen">Band 3</span>) канала.</p>
+
+<div class="script_01">
+<figure>
+<a id="3_band_"><img src="Pict_3_14/3_band_.png" width="340" height="relative"></a>
+</figure>
+<figure>
+<a id="5_band_"><img src="Pict_3_14/5_band_.png" width="340" height="relative"></a>
+</figure>
+</div><br>
+<span class="imgtitle">Рис. 14.10 а) зеленый 3-й канал  хорошо выделяет долинные леса, b) ближний инфракрасный 5-й канал позволяет разделять поля с различными культурами и\или фазами зрелости а также видеть внутреннюю структуру зеленых насаждений</p>
+
+<p><span class="backgreen">Band 6</span> <span class="cursive">ShortWave InfraRed (SWIR1)</span> и <span class="backgreen">Band 7</span> <span class="cursive">ShortWave InfraRed (SWIR2)</span> - короткие инфракрасные каналы 6 и 7  хорошо отображают различия между влажной и сухой поверхностью, а также между разными типами горных пород и почв. В сочетании с другими каналами образует информативные так называемые <strong>false-color image|псевдоцветовые образы</strong>, часто используемые для различных специфических задач, например делимитации территорий, пострадавших от пожаров.</p>
+
+<div class="script_01">
+<figure>
+<a id="6_band_"><img src="Pict_3_14/6_band_.png" width="340" height="relative"></a>
+</figure>
+<figure>
+<a id="7_band_"><img src="Pict_3_14/7_band_.png" width="340" height="relative"></a>
+</figure>
+</div><br>
+<span class="imgtitle">Рис. 14.11  Коротковолновые инфракрасные каналы 6 и 7</p>
+
+<p><span class="backgreen">Band 8</span> <span class="cursive">panchromatic</span></b> - панхроматический канал используется как дополнительный, обеспечивающий  эффект <strong>pan sharpening</strong> - увеличения разрешения  (резкости) изображения. Поскольку данный канал отличается по разрешению (<span class="greencursiv">15 м</span>) в <span class="blue">SAGA GIS</span> он открывается в отдельной грид-системе набора данных.</p>
+
+<p><span class="backgreen">Band 9</span> <span class="cursive">cirrus</span> - канал перистых облаков используется для выделения и снятия облачности, которая, как отмечают специалисты, является "настоящей головной болью" для дешифровщиков космических снимков.</p>
+
+<p><span class="backgreen">Band 10</span> и <span class="backgreen">Band 11</span> <span class="cursive">Thermal InfraRed, (TIR)</span> - тепловые каналы, позволяющие разделить объекты на поверхности по температуре. Преобразование этих каналов <span class="monospace">Landsat-8</span> дает возможность, например, получать тепловые карты на урбанизированные территории и выявлять так называемые "острова тепла" в современных мегаполисах.</p>
+
+<a id="11_band_.png"><img src="Pict_3_14/11_band_.png" width="70%" height="relative"></a>
+<br><span class="imgtitle">Рис. 14.12 Тепловой 11-й канал Landsat-8 позволяет различать покрытые ледниками и снежниками хребты и поверхность горы Эльбрус в левом верхнем углу снимка</p>
+<br>
+
+
+<h3 id="h3_3">14.3. Композитные сочетания Landsat</h3>
+
+<p>Для получения композитов - сочетаний каналов в <span class="blue">SAGA GIS</span> необходимо указать значения <span class="cursive">Red-Green-Blue</span> для привлекаемых к синтезу геотифов <span class="monospace">Landsat</span>, при этом открытым в карте должен быть канал "назначаемый" красным <span class="cursive">Red</span>: остальные слои могут быть добавлены из окна <span class="monospace">Data</span>. Так, для получения композита в натуральных цветах добавляем к карте <span class="cursive">(Add to Map)</span> <span class="backgreen">Band 4</span> - <span class="cursive">Red</span>, подсвечиваем слой (выделяем в списке слоев Карты) делая активным вкладку <span class="monospace">Setting|Установки</span>, не забывая при этом, что канал <span class="cursive">Red</span> всегда должен быть верхним (<span class="cursive">to Top</span>) в списке слоев карты. В <span class="monospace">Установках</span> в позиции <span class="monospace">Type</span> выбираем <span class="cursive">RGB Composite</span> (тогда <span class="backgreen">Band 4</span> автоматически позиционируется <span class="cursive">This Color - Red</span>, в строке <span class="monospace">Green</span>  - <span class="backgreen">Band 3</span>, в строке <span class="monospace">Blue</span> - <span class="backgreen">Band 2</span>. После подтверждения настроек <span class="cursive">(Apply)</span> в окне карты будет изображение композита в натуральных цветах.</p>
+
+<a id="4_3_2_composite"><img src="Pict_3_14/4_3_2_composite.png" width="95%" height="relative"></a>
+<br><span class="imgtitle">Рис. 14.13 Композитное изображение в натуральных цветах - Red-Green-Blue (4-3-2) L8 </p>
+
+<p>Композит <span class="backgreen">Red-Green-Blue (4-3-2) L8</span> позволяет видеть объект в привычном цвете и фактуре изображения: легко различимы ледниковые склоны и покрытые снежниками хребты, леса на склонах, не покрытые растительностью фрагменты скальных стенок, сельхозугодья различного вида и населенные пункты. Для достижения эффекта <span class="blackbold">PanSharpening</span> следует добавить к карте <span class="backgreen">Band 8</span> и настроить его прозрачность. Другой способ получить композит повышенного разрешения — это использовать инструмент <span class="blackbold">HS Sharpening</span> набора <span class="monospace">Tools</span> группы <span class="monospace">Imagery</span>.</p>
+
+<div class="script_01">
+<figure>
+<a id="432_zoom"><img src="Pict_3_14/432_zoom.png" width="340" height="relative"></a>
+</figure>
+<figure>
+<a id="432_sharp_zoom"><img src="Pict_3_14/432_sharp_zoom.png" width="340" height="relative"></a>
+</figure>
+</div><br>
+
+<span class="imgtitle">Рис. 14.14 Композит Red-Green-Blue (4-3-2): a) в натуральных цветах без эффекта Pan Sharpening и b) с добавленным восьмым каналом</p>
+
+<p>Считается, что здоровая растительность выглядит зеленой, убранные поля – светлыми, угнетенная растительность – коричневой и желтой, дороги – серыми, береговые линии – белесыми. Эта комбинация каналов дает возможность анализировать состояние водных объектов и процессы седиментации, оценивать глубины. Композит <span class="backgreen">Red-Green-Blue (4-3-2) L8</span> также используется для изучения антропогенных объектов. Вырубки и разреженная растительность детектируются плохо, в отличие, например, от комбинации <span class="backgreen">Red-NIR-New Deep Blue (4-5-1)</span>. Облака и снег выглядят одинаково белыми и трудноразличимы. Кроме того, трудно отделить один тип растительности от другого.</p>
+
+<p>Интересен композит <span class="backgreen">NIR-Red-Green (5-4-3) L8</span>  - стандартная комбинация <strong>«искусственные цвета»</strong>. Растительность отображается в оттенках красного, городская застройка – зелено-голубых, а цвет почвы варьируется от темно до светло коричневого. Лед и снег выглядят белыми или светло голубыми, периферия заснеженных склонов, как в данном случае для Приэльбрусья смотрится синей. Хвойные леса будут выглядеть более темно-красными или даже коричневыми по сравнению со светло-зелеными лиственными. В светлые тона зеленого окрашены и днища долин (русловая сеть - в оттенках фиолетового); сельхозугодья - в различных оттенках красного. Эта комбинация очень популярна и используется, главным образом, для изучения состояния растительного покрова и почв, а также для мониторинга условий дренажа и для изучения состояния агрокультур.</p>
+
+<div class="script_01">
+<figure>
+<a id="543_zoom"><img src="Pict_3_14/543_zoom.png" width="340" height="relative"></a>
+</figure>
+<figure>
+<a id="543_zoom_"><img src="Pict_3_14/543_zoom_.png" width="340" height="relative"></a>
+</figure>
+</div>
+<br><span class="imgtitle">Рис. 14.15 Композит NIR-Red-Green (5-4-3) в искусственных цветах: а) горный район, b) предгорье и освоенная равнина</p>
+
+<p>Композит <span class="backgreen">SWIR2-NIR-Green (7-5-3)</span>  представляет собой еще одну стандартную комбинацию <strong>«искусственные цвета»</strong>, позволяющую  различать типы растительности, в частности -  дифференцировать хвойные и лиственные леса на склонах;  кроме того, данный композит лучше, чем предыдущая комбинация разделяет сельскохозяйственные угодья. Снежные и ледниковые области  белые и голубые, хвойные леса на склонах - красные, сельхозугодья различных культур и стадий вегетации - оттенки красного, желтого, зеленого.</p>
+
+<div class="script_01">
+<figure>
+<a id="753_zoom"><img src="Pict_3_14/753_zoom.png" width="340" height="relative"></a>
+</figure>
+<figure>
+<a id="753_zoom_"><img src="Pict_3_14/753_zoom_.png" width="340" height="relative"></a>
+</figure>
+</div>
+
+<br><span class="imgtitle">Рис. 14.16 Композит SWIR2-NIR-Green (7-5-3) в искусственных цветах:: а) горный район, b) предгорье и освоенная равнина 
+
+<p>Композит <span class="backgreen">NIR-SWIR1-Blue (5-6-2) L8</span>  позволяет дифференцировать растительность: здоровая растительность отображается в оттенках красного, коричневого, оранжевого и зеленого. Почвы могут выглядеть зелеными или коричневыми, урбанизированные территории – белесыми, серыми и зелено-голубыми; ярко голубой цвет может обнаруживать недавно вырубленные территории, а красноватые оттенки – разреженную растительность или восстанавливающуюся растительности. Чистая, глубокая вода будет выглядеть темно синей (почти черной), если же это мелководье или в воде содержится большое количество взвесей, то будут преобладать более светлые оттенки синего. Добавление первого коротковолнового инфракрасного канала <span class="backgreen">SWIR1</span> позволяет дополнительно добиться хорошей различимости возраста растительности.</p>
+
+<div class="script_01">
+<figure>
+<a id="562_zoom"><img src="Pict_3_14/562_zoom.png" width="340" height="relative"></a>
+</figure>
+<figure>
+<a id="562_zoom_"><img src="Pict_3_14/562_zoom_.png" width="340" height="relative"></a>
+</figure>
+</div>
+<br><span class="imgtitle">Рис. 14.17 Композит NIR-SWIR1-Blue (5-6-2)  в искусственных цветах:: а) горный район, b) предгорье и освоенная равнина
+
+<p>В частности на приведенном снимке <a href="#562_zoom">(Рис. 14.17)</a> можно видеть как различаются заснеженные и ледниковые области, склоны различной (северо-западной и юго-восточной) экспозиции, залесенные и луговые склоны; в равнинной области естественная растительность имеет ярко коричневые оттенки а сельхозугодья - различные оттенки зеленого.</p>
+
+<p>Композит <span class="backgreen">NIR-SWIR1-Red (5-6-4) L8</span> - это комбинация ближнего <span class="backgreen">NIR</span>, среднего инфракрасного  <span class="backgreen">SWIR1</span> и красного видимого канала <span class="backgreen">Red</span> позволяет четко различить границу между водой и сушей, подчеркнуть скрытые детали, плохо видимые при использовании только каналов видимого диапазона. С большей точностью будут детектироваться водные объекты внутри суши. Композит отображает растительность в различных оттенках и тонах коричневого, зеленого и оранжевого. Эта комбинация дает возможность анализа влажности и полезна при изучении почв и растительного покрова. В целом, чем выше влажность почв, тем темнее  будет выглядеть конкретная область снимка, что обусловлено поглощением водой излучения инфракрасного диапазона.</p>
+
+<div class="script_01">
+<figure>
+<a id="564_zoom"><img src="Pict_3_14/564_zoom.png" width="340" height="relative"></a>
+</figure>
+<figure>
+<a id="564_zoom_"><img src="Pict_3_14/564_zoom_.png" width="340" height="relative"></a>
+</figure>
+</div>
+
+<br><span class="imgtitle">Рис. 14.18 Композит  NIR-SWIR1-Red (5-6-4) в искусственных цветах: а) горный район, b) предгорье и освоенная равнина
+
+<p>На территории Приэльбрусья сочетание <span class="backgreen">NIR-SWIR1-Red (5-6-4) L8</span> выделяет ярко-фиолетовый ("брусничный") оттенок заснеженных и ледниковых областей, заметна также дифференциация склонов разной экспозиции, ровный светло-коричневый оттенок лиственных насаждений предгорий и долин, богатство зеленых оттенков сельхозугодий.</p>
+ 
+<p>Композит <span class="backgreen">SWIR2-SWIR1-NIR (7-6-5) L8</span>  - обеспечивает "дезавуирование" состояния атмосферы, поскольку комбинация не включает ни одного канала из видимого диапазона. Композит может быть использован для анализа типологии и структуры растительного покрова, а также текстуры и влажности почв. Так на приведенном фрагменте <a href="#765_zoom">(Рис. 14.19)</a> хвойные леса на склонах гор отображаются в различных оттенках зеленого, лиственные насаждения и луга - от оттенков синего до голубого цвета, лиственные леса предгорий и пойменные леса имеют интенсивно синий цвет, сельхозугодья - различные оттенки зеленого; хорошо выделяются поймы (в тонах коричневого) и населенные пункты.</p>
+
+<div class="script_01">
+<figure>
+<a id="765_zoom"><img src="Pict_3_14/765_zoom.png" width="340" height="relative"></a>
+</figure>
+<figure>
+<a id="5765_zoom_"><img src="Pict_3_14/765_zoom_.png" width="340" height="relative"></a>
+</figure>
+</div>
+<br><span class="imgtitle">Рис. 14.19 Композит SWIR2-SWIR1-NIR (7-6-5) в искусственных цветах: а) горный район, b) предгорье и освоенная равнина
+
+<p>Композит <span class="backgreen">TIRS1-SWIR1-NIR (10-6-5) L8</span> c включением первого температурного канала позволяет обнаруживать поверхности более теплые чем их окружение; в роли таковых часто выступают места недавних пожаров (гари) или не заросшие вырубки; в данном отображении они обычно выглядят как ярко красные. На приведенном снимке <a href="#1054_zoom">(Рис. 14.20)</a>, в частности, хорошо дифференцируются пригребневые части хребтов, склоны различной крутизны и экспозиции с хвойными и лиственными лесами; на равнине разную насыщенность красного имеют сельскохозяйственные угодья с разными сроками обработки.</p>
+
+<div class="script_01">
+<figure>
+<a id="1054_zoom"><img src="Pict_3_14/1054_zoom.png" width="340" height="relative"></a>
+</figure>
+<figure>
+<a id="1054_zoom_"><img src="Pict_3_14/1054_zoom_.png" width="340" height="relative"></a>
+</figure>
+</div>
+
+<br><span class="imgtitle">Рис. 14.20 Композит TIRS1-SWIR1-NIR 10-6-5 в искусственных цветах: а) горный район, b) предгорье и освоенная равнина 
+
+
+<p>Сохранение композитов в <span class="blue">SAGA GIS</span> (для возможности обработки) производится в окне <span class="monospace">Data</span> последовательностью <span class="cursive">MAP >> Save as image >> Taggle image File Format (*.tif)</span>. Чтобы не потерять в качестве композитного изображения в диалоговом окне следует указать  <span class="monospace">Map Width|Ширину Изображения</span> равным числу колонок исходного канала (в позиции <span class="monospace">Description</span> параметр <span class="monospace">Number of Columns</span>) и <span class="monospace">Map Hegth|Высоту Изображения</span>  (параметр <span class="monospace">Number of Rows</span>). Итоговый геотифф будет содержать легенду с тремя каналами.</p>
+
+<a id="10_54_compozitt"><img src="Pict_3_14/10_54_compozitt.png" width="95%" height="relative"></a>
+<br><span class="imgtitle">Рис. 14.21 Композит  TIRS1-SWIR1-NIR 10-6-5 сохраненный как новый растр в формате геотифф и открытый в SAGA</span></p>
+
+<br>  
+
+      <h3 id="h3_4">14.4. Вегетационные индексы</h3>
+
+<p>Различные алгоритмы были разработаны исследователями в попытке извлечь максимальную информацию из спектральных полос спутниковых изображений. Как мы уже убедились разные комбинации каналов позволяют дифференцировать разные феномены и устранять воздействие нежелательных свойств растрового изображения; собственно исходя из этих особенностей  и построены расчеты различных индексов <a href="BIBLIO.html#Черепанов">[Черепанов, Дружинина, 2009]</a>. </p>
+
+<p>Некоторые индексы были названы <strong>вегетационными индексами</strong>, поскольку использовались прежде всего для мониторинга и картографирования интенсивности вегетации. В самом общем виде <strong>Вегетационный индекс (ВИ)</strong> это показатель, рассчитываемый в результате операций с разными спектральными диапазонами (каналами) ДДЗ, и имеющий отношение к параметрам растительности в данном пикселе снимка. Предполагалось, что индексы растительности способны выявлять и акцентировать здоровую растительность яркими оттенками, приглушенными - поврежденную и\или угнетенную, при этом территории со скудной растительностью и без нее выглядят темными. Поскольку тени от форм рельефа (холмов и долин) влияют на интенсивность изображений, индексы создаются таким образом, чтобы сильнее выделялся цвет, а не интенсивность; в результате значение индекса растительности для соснового бора на затененной речной террасе будет почти совпадать с индексом для сосняка, находящегося на водоразделе и попадающего под воздействие прямого солнечного света.</p>
+
+<p>Практически все <strong>ВИ</strong> (а их на сегодняшний день уже более полутора сотен) выведены эмпирически и используют отношение красного <span class="backgreen">Band 4</span> канала <span class="monospace">Landsat 8</span> к ближнему инфракрасному каналу <span class="backgreen">Band 5</span>, а также основаны на предположении, что в ближнем инфракрасном диапазоне лежит так называемая <b>"линия открытой почвы"</b>, т.е., линия в спектральном диапазоне соответствующая открытому лишенному растительности грунту. Считается также, что на диапазон красного канала  (<span class="greencursiv">0,62–0,75 мкм</span>) приходится максимум поглощения солнечной радиации хлорофиллом, а на диапазон инфракрасного (<span class="greencursiv">0,75–1,3 мкм</span>) – максимальное отражение энергии клеточной структурой листа.</p>
+
+<p>Необходимым функционалом для расчета вегетационных индексов обладают многие современные ГИС: <span class="red">ArcGIS</span>, <span class="blue">SAGA GIS</span>, <span class="green">Global Mapper</span>. Мощный инструментарий по расчету вегетационных индексов реализован  в геоинформационных системах, специализирующихся на обработке данных дистанционного зондирования, таких как <b>ENVI</b> (возможен расчет 27 индексов) и <b>ERDAS Imagine</b>.</p>
+
+<p>Расчет индексов в практически любых гис-пакетах может быть осуществлен через <b>калькулятор растров</b> в соответствии с формулой. Так, в <span class="blue">SAGA GIS</span> расчет может быть произведен с помощью инструмента <span class="blackbold">Grid Calculator</span> набора <span class="blackbold">Calculus</span> группы <span class="blackbold">Grid</span>. Пользователь должен "завести" необходимые растры (гриды) в определенном порядке (первый, второй, третий). Переменные грида в формуле начинаются с буквы <span class="greencursiv">g</span>, за которой следует индекс позиции, соответствующий порядку гридов во входном списке  (например: <span class="greencursiv">g1, g2, g3</span> соответствуют первому, второму, третьему  гриду в списке). Гриды из других координатных систем, кроме системы по умолчанию, могут быть адресованы аналогично, используя букву <span class="greencursiv">h</span> (<span class="greencursiv">h1, h2, h3</span>), что соответствуют списку <span class="cursive">Гриды из разных систем</span>. Например, при расчете индекса <strong>NDVI</strong> по формуле:<br>
+
+	<span class="monospace">NDVI = (NIR - R) / (NIR + R)</span><br>
+
+пользователь указывает в позиции <span class="monospace">Grids </span>диалогового окна инструмента <span class="monospace">Grid Calculator</span> в качестве первого растра канал <span class="backgreen">Red (4)</span>, в качестве второго канал <span class="backgreen">NIR (5)</span>, записывая формулу в диалоговом окне инструмента <span class="blackbold">Formula</span> диалогового окна как:<br>
+
+<span class="monospace">(g2 - g1) / (g2 + g1)</span><br>
+
+поскольку в данном случае <span class="greencursiv">g2</span> (второй растр) - это  ближний-инфракрасный 5-й канал, а <span class="greencursiv">g1</span> (первый растр) - красный канал 4.</p>
+
+<a id="gridcalc_saga"><img src="Pict_3_14/gridcalc_saga.png" width="80%" height="relative"></a>
+<br><span class="imgtitle">Рис. 14.22 Последовательность выбора гридов для расчета в  Grid Calculator SAGA</span></p>
+
+<a id="gridcalc_saga_form"><img src="Pict_3_14/gridcalc_saga_form.png" width="50%" height="relative"></a>
+<br><span class="imgtitle">Рис. 14.23 Общий вид диалогового окна инструмента Grid Calculator SAGA</span></p>
+
+
+<p>Для "облегчения жизни" потенциального пользователя в <span class="blue">SAGA GIS</span> разработаны два инструмента, позволяющие моделировать большую часть наиболее часто рассчитываемых <strong>ВИ</strong>. <span class="blackbold">Vegetation Index</span> набора <span class="blackbold">Tools</span> группы <span class="blackbold">Imagery</span>. <span class="blue">SAGA GIS</span> предлагает два варианта расчета - <span class="cursive">Vegetation Index Slope Based</span> (основанный на учете уклона) <a href="BIBLIO.html#McCloy">[McCloy, 2006]</a> -  и <span class="cursive">Vegetation Index Distance Based</span></b> (основанный на учете расстояния) <a href="BIBLIO.html#Silleos_2006">[Silleos et al., 2006]</a>. В <a href="#Таблица 14.4">(Таблице 14.4)</a>  приведены формулы расчета различных вегетационных индексов для <span class="cursive">Slope Based</span> алгоритма, <span class="backgreen">NIR</span> - ближний-инфракрасный (5-й канал), <span class="backgreen">Red</span> - красный (4-й канал), <span class="backgreen">Blue</span> голубой (2-й канал) <span class="monospace">Landsat 8</span>. </p>
+
+<a id="Таблица 14.4"><span class="imgtitle">Таблица 14.4 Вегетационные индексы, рассчитываемые в SAGA</span></a>
+
+
+<div class="table">
+<table id="customers">
+        <table border="1">
+<tr>
+<th>Наименование</th>
+<th>Расчет</th>
+<th>Автор</th>
+</tr>
+<tr>
+ <th colspan="3"style="text-align:center";>Vegetation Index (Slope Based)</th>
+</tr>
+<tr>
+	<td>Difference Vegetation Index</td>
+	<td>DVI = NIR - Red</td>
+	<td></td>
+</tr>
+<tr>
+	<td>Normalized Difference Vegetation Index </td>
+	<td>NDVI = (NIR - Red) / (NIR + Red)</td>
+	<td>Rouse et al. 1974</td>
+</tr>
+<tr>
+	<td>Ratio Vegetation Index</td>
+	<td>RVI = Red / NIR</td>
+	<td>Richardson and Wiegand, 1977</td>
+</tr>
+<tr>
+	<td>Normalized Ratio Vegetation Index </td>
+	<td>NRVI = (RVI - 1) / (RVI + 1)</td>
+	<td>Baret and Guyot, 1991)</td>
+</tr>
+<tr>
+	<td>Transformed Vegetation Index </td>
+	<td>TVI = [(NIR - Red) / (NIR + Red) + 0.5]*0.5</td>
+	<td>Deering et al., 1975</td>
+</tr>
+<tr>
+	<td>Corrected Transformed Ratio Vegetation Index </td>
+	<td>CTVI = [(NDVI + 0.5) / abs(NDVI + 0.5)] * [abs(NDVI + 0.5)]^0.5
+</td>
+	<td>Perry and Lautenschlager, 1984</td>
+</tr>
+<tr>
+	<td>Thiam's Transformed Vegetation Index </td>
+	<td>RVI = [abs(NDVI) + 0.5]^0.5</td>
+	<td>Thiam, 1997</td>
+</tr>
+<tr>
+	<td>Soil Adjusted Vegetation Index</td>
+	<td>SAVI = [(NIR - R) / (NIR + R)] * (1 + S)</td>
+	<td>Huete, 1988</td>
+</tr>
+</table>
+<br>
+
+<p>Существуют разные классификации вегетационных индексов. Но наиболее часто выделяют так называемые "широкополосные" и "узкополосные индексы". К <strong>широкополосным</strong> относят индексы зелени, рассчитанные по данным в широких спектральных зонах:</p>
+<ul>
+<li>Normalized Difference Vegetation Index;</li>
+<li>Simple Ratio Index;</li>
+<li>Enhanced Vegetation Index;</li>
+<li>Atmospherically Resistant Vegetation Index</li>
+<li>Sum Green Index.</li>
+</ul>
+
+
+<p>Индексы этой группы отражают общее количество растительности, обобщая и отражая влияние таких факторов, как плотность и структура растительного покрова, площадь поверхности листьев, содержание хлорофилла; поэтому данные показатели используются для выявление территорий, покрытых и не покрытых растительностью, а также для оценки и мониторинга состояния растительного покрова, оценки продуктивности, урожайности и т.п.</p>
+
+<p><strong>Разностный вегетационный индекс (Difference Vegetation Index - DVI)</strong> представляет собой простую разницу значений растра ближнего-инфракрасного и красного каналов. В последнее время чаще используется нормализованный вариант.</p>
+
+<table id="customers">
+   <table border="0" >
+       <tr>
+<td><a id="vi_ndvi_scene"><img src="Pict_3_14/vi_ndvi_scene.png" width="350" height="relative"></a></td>
+<td><a id="vi_ndvi_scene_L"><img src="Pict_3_14/vi_ndvi_scene_L.png" width="40"></a></td>
+       </tr>
+</table>
+
+<br><span class="imgtitle">Рис. 14.24 Разностный вегетационный индекс (DVI)</span></p>
+
+
+<p><strong>Нормализованный разностный вегетационный индекс (Normalized Difference Vegetation Index</strong> - показывает наличие и состояние растительности (относительную биомассу). Этот <span class="bolditalic">индекс использует контраст характеристик двух каналов из набора мультиспектральных растровых данных — поглощения пигментом хлорофилла в красном канале и высокой отражательной способности частей растений в инфракрасном канале</span>. <span class="blackbold">NDVI</span> изменяется под влиянием целого ряда факторов:  видового состава, плотности и сомкнутости растительного покрова, цвета почвы под разреженной растительностью, а также морфометрических параметров рельефа - уклона и экспозиции. Однако <span class="bolditalic">отражение широкого спектра детерминирующих факторов является причиной несовершенства метода, поскольку на результат могут воздействовать погодные условия и состояние фазы вегетационного развития растительного покрова</span>. В частности отмечается </a> что  "в силу своей привязанности к количеству фотосинтезирующей биомассы индекс не эффективен на снимках, полученных в сезон ослабленной или невегетирующей в данный период растительности" <a href="BIBLIO.html#Воронина">[Воронина, Мамаш, 2014, стр. 91]<a href=""></a>.</p>
+
+
+<table id="customers">
+   <table border="0" >
+       <tr>
+<td><a id="vi_ndvi"><img src="Pict_3_14/vi_ndvi.png" width="350" height="relative"></a></td>
+<td><a id="vi_ndvi_L"><img src="Pict_3_14/vi_ndvi_L.png" width="40"></a></td>
+       </tr>
+</table>
+<br><span class="imgtitle">Рис. 14.25 Нормализованный разностный вегетационный индекс NDVI</span></p>
+
+<p><span class="blackbold">NDVI</span> часто используется для мониторинга засухи, мониторинга и прогнозирования урожаев, помощи в предсказании опасных зон пожаров и картографировании процесса опустынивания. <span class="blackbold">NDVI</span> предпочтительнее для глобального мониторинга растительности, и выдает значения от <span class="greencursiv">-1,0</span> (отрицательные значения в основном образуются от облаков, воды и снега) до <span class="greencursiv">1,0</span> (представляющие зелень). Значения, близкие к нулю (<span class="greencursiv"><0,1</span>) соответствуют открытому грунту и скальным поверхностям без растительности. Умеренные значения (от <span class="greencursiv">0,2</span> до <span class="greencursiv">0,3</span>) представляют кустарники и луга, в то время как большие значения (от <span class="greencursiv">0,6</span> до <span class="greencursiv">0,8</span>) указывают на умеренные и тропические леса <a href="BIBLIO.html#Mroz2004">[Mroz, Sobieraj, 3004]</a>.</p>
+
+<p><strong>Относительный вегетационный индекс (Ratio Vegetation Index, RVI)</strong> изменяется от <span class="greencursiv">0</span> до до бесконечности, фиксируя объем зеленой фитомассы и сопутствующие показатели, такие как плотность напочвенного покрова или сомкнутость крон древостоя, обычные значения в диапазоне от <span class="greencursiv">2</span> до <span class="greencursiv">8</span>.</p>
+
+<table id="customers">
+   <table border="0" >
+       <tr>
+<td><a id="vi_ratio_vi"><img src="Pict_3_14/vi_ratio_vi.png" width="350" height="relative"></a></td>
+<td><a id="vi_ratio_vi_L"><img src="Pict_3_14/vi_ratio_vi_L.png" width="50"></a></td>
+       </tr>
+</table>
+
+<br><span class="imgtitle">Рис. 14.26 Относительный вегетационный индекс RVI
+
+
+<p><strong>Усовершенствованный вегетационный индекс (Enhanced Vegetation Index, EVI)</strong> разработан как улучшение <span class="blackbold">NDVI</span> путем оптимизации сигнала растительности в областях с высоким индексом листовой поверхности <span class="blackbold">LAI</span>. Индекс использует синюю область отражения для коррекции фоновых сигналов почвы и уменьшения атмосферных воздействий, в том числе аэрозольного рассеяния. Наиболее полезен в регионах с высоким уровнем LAI, где NDVI может перенасыщаться. Отсутствует в наборе инструментов <span class="blue">SAGA GIS</span> и может быть рассчитан с помощью калькулятора:<br>
+<br>
+<span class="monospace">EVI = 2.5 * ((NIR – Red) / ((NIR) + (C1 * Red) – (C2 * Blue) + L))<br>
+
+(NIR – Red) / (NIR + C1 * Red - C2 * BLUE + L) * (1 + L)</span><br>
+
+<p>Коэффициенты <span class="cursive">C1, C2, L</span> эмпирически установлены равными <span class="greencursiv">6.0</span>, <span class="greencursiv">7.5</span> и <span class="greencursiv">1.0</span> соответственно. Если в качестве третьего растра (<span class="cursive">g3</span>) вести второй канал <span class="monospace">Landsat 8</span>, то тогда в <span class="monospace">калькуляторе растра</span> <span class="blue">SAGA GIS</span> формула принимает вид:<br>
+<br>
+<span class="monospace">(g2- g1) / ((g2 + 6 * g1 - 7.5 * g3 + 1) * (1 + 1))<br>
+где g1 - Red, g2 - NIR, g3 - Blue каналы Landsat 8 </span><br>  
+
+Значения <span class="blackbold">EVI</span> для вегетационных пикселей должны находиться в диапазоне от <span class="greencursiv">0</span> до <span class="greencursiv">1</span>. Для зелёной растительности обычны значения от <span class="greencursiv">0.2</span> до <span class="greencursiv">0.8</span>.</p>
+
+<p><strong>Инфракрасный вегетационный индекс (Infrared Percentage Vegetation Index, IPVI)</strong> близок по значению к <span class="monospace">NDVI</span>:<br>
+<br>
+<span class="monospace">IPVI = NIR / (NIR + Red)</span><br>
+
+и может принимать значения от <span class="greencursiv">0</span> до <span class="greencursiv">1</span>. Для зелёной растительности характерны значения от <span class="greencursiv">0.6</span> до <span class="greencursiv">0.9.</span></p>
+
+<table id="customers">
+   <table border="0" >
+       <tr>
+<td><a id="vi_ivpii"><img src="Pict_3_14/vi_ivpii.png" width="350" height="relative"></a></td>
+<td><a id="vi_ivpii_L"><img src="Pict_3_14/vi_ivpii_L.png" width="40"></a></td>
+       </tr>
+</table>
+
+<br><span class="imgtitle">Рис. 14.27 Инфракрасный вегетационный индекс IPVI
+
+<p><strong>Перпендикулярный вегетационный индекс (Perpendicular Vegetation Index, PVI)</strong> чувствителен к атмосферным отклонениям. При использовании этого метода для сравнения разных изображений его следует применять только к изображениям, скорректированным по атмосфере. Под этим названием скрываются по меньшей мере 4 индекса, рассчитываемые инструментом <span class="blackbold">Vegetation Index </span> <span class="cursive">Distance Based</span> в<span class="blue">SAGA GIS</span> по нескольким различающимся авторским формулам. Одна из них:<br>
+<br>
+<span class="monospace">PVI = NIR*sinα − Red*cosα</span><br>
+
+где <span class="monospace">α</span> — угол между почвенной линией и осью NIR. Может принимать значения от − <span class="greencursiv">1</span>   до <span class="greencursiv">1</span>. Значительно изменяется в одной и той же зоне при переходе от горных к равнинным областям вследствие изменения угла <span class="monospace">α</span> <a href="BIBLIO.html#Gitelson">[Gitelson A., et al]</a>.</p>
+
+<p><strong>Взвешенный разностный вегетационный индекс (Weighted Difference Vegetation Index, WDVI)</strong> математически более простой вариант PVI, чувствителен к атмосферному воздействию:<br>
+<br>
+<span class="monospace">WDVI = NIR − gRed</span><br>
+
+где <span class="cursive">g</span> -   наклон почвенной линии.</p>
+
+<table id="customers">
+   <table border="0" >
+       <tr>
+<td><a id="vi_wdvi"><img src="Pict_3_14/vi_wdvi.png" width="350" height="relative"></a></td>
+<td><a id="vi_wdvi_L"><img src="Pict_3_14/vi_wdvi_L.png" width="40"></a></td>
+       </tr>
+</table>
+
+<br><span class="imgtitle">Рис. 14.28 Взвешенный разностный вегетационный индекс (Weighted Difference VI, WDVI) при угле почвенной линии в 30<sup>0</sup> </span></p>
+
+
+<p>Все попытки улучшения вегетационных индексов сводились к стремлению нивелирования или учета влияния почвенных и атмосферных условий. Таким образом были разработаны так называемые <strong>узкополосные индексы</strong>:</p>
+<ul>
+<li>Red Edge Normalized Difference Vegetation Index;</li>
+<li>Modified Red Edge Simple Ratio Index;</li>
+<li>Modified Red Edge Normalized Difference Vegetation Index;</li>
+<li>Vogelmann Red Edge Index 1,2,3;</li>
+<li>Red Edge Position Index.</li>
+</ul>
+
+<p>Использование значений коэффициентов отражения в узких спектральных зонах позволяет использовать индексы для регистрации даже небольших изменений состояния растительности <a href="BIBLIO.html#Silleos_2006">[Silleos et al., 2006]</a>.</p>
+
+<p><strong>Почвенный вегетационный индекс (Soil Adjusted Vegetation Index, SAVI)</strong> открывает группу индексов, учитывающих влияние почвенных условий. Индекс <span class="monospace">SAVI</span> стремиться минимизировать влияние яркости почвы с помощью коэффициента коррекции яркости. Подсчитывается с использованием коэффициента <span class="monospace">S</span> (или <span class="monospace">L</span>) изменяющегося от <span class="greencursiv">0</span> для очень густого растительного покрова, до "<span class="greencursiv">1</span>  для очень разреженного, чаще всего используют <span class="monospace">S</span> равный <span class="greencursiv">0.5</span>.</p>
+
+<p><strong>Модицифированный почвенный вегетационный индекс с 1 (Modified Soil Adjusted Vegetation Index, MSAVI1)</strong> рассчитывается как:<br>
+<br>
+<span class="monospace">MSAVI1 = ((NIR - Red) / (NIR + Red + L)) * (1 + L) <br>
+где L = 1−2s · NDVI · WDVI, s — наклон почвенной линии.</span><br>
+Значения индекса изменяются от <span class="greencursiv">−1</span> до <span class="greencursiv">1</span>. Линия почв проходит через точку <span class="greencursiv">0</span>.</p>
+
+<p>Группа индексов, устойчивых к влиянию атмосферы включает несколько индексов, простейшим из которых является <strong>Индекс устойчивости к видимой атмосфере (VARI)</strong>, разработанный для выделения растительности в видимой части спектра, при ослаблении влияния разницы освещения и атмосферных явлений. Он идеально подходит для RGB или цветных изображений; использует все три видимых канала (<span class="backgreen">4 Red</span>, <span class="backgreen">3 Green</span>, <span class="backgreen">2 Blue</span>). <span class="monospace">VARI</span> явно отличается от прочих индексов, резко отделяя часть естественного растительного покрова от сельскохозяйственных угодий, пастбищ и луговых участков.</p>
+
+VARI = (Green - Red) / (Green + Red - Blue)<br>
+<br>
+
+<table id="customers">
+   <table border="0" >
+       <tr>
+<td><a id="vi_vari"><img src="Pict_3_14/vi_vari.png" width="350" height="relative"></a></td>
+<td><a id="vi_vari_L"><img src="Pict_3_14/vi_vari_L.png" width="40"></a></td>
+       </tr>
+</table>
+
+<br><span class="imgtitle">Рис. 14.29 Индекс устойчивости к видимой атмосфере (VARI)
+ <br>  
+
+<p>Особую группу образуют индексы, рассчитываемые по значениям коэффициентов отражения в узких спектральных диапазонах и отражающие общее количество и состояние растительности. К ним относятся <strong>Нормализованный разностный вегетационный индекс для области ближнего инфракрасного склона (Red Edge Normalized Difference Vegetation Index)</strong>.</p>
+
+<p>Любые вегетационные индексы не дают абсолютных количественных показателей исследуемого свойства, и их значения зависят от характеристик сенсора (ширина спектральных каналов, разрешение), условий съёмки, освещённости, состояния атмосферы. Эти индексы представляют только относительные оценки свойств растительного покрова, которые могут быть интерпретированы и с привлечением полевых данных пересчитаны в абсолютные <a href="BIBLIO.html#Silleos_2006">[Silleos et al., 2006]</a>.</p>
+
+<p>Кроме того вегетационные индексы подвержены выраженной внутрисезонной и внутригодовой динамике. Индексы растительности, рассчитанные для сельскохозяйственного поля, которые выполняются каждую неделю с момента засеивания поля и в течение всего вегетационного сезона будут изменяться в значительных пределах: сначала закономерно повышаясь по мере роста и созревания культур (когда изменяется цвет), наконец, урожай может быть собран, оставшееся жнивье или оттава на лугах будут иметь совсем другие характеристики. То же происходит, когда у овощных культур отпадают зеленые части, а у древесных - листья.</p>
+<br>
+
+
+<h3 id="h3_5">14.5. Компонентные и ландшафтные индексы</h3>
+
+<p>Поскольку отражательной способностью обладают не только зеленые растения, но и другие объекты землепользования и ландшафтного покрова, то разрабатывались специфические индексы для их делимитации. Например, специфические индексы применяются для обнаружения объектов, образуемых водой в разных агрегатных состояниях (жидком - акватории, кристаллическом - снежные покровы и ледники). Специальные индексы <strong>Водный индекс (Water Band Index, WBI)</strong>, <strong>Индекс стресса влажности (Moisture Stress Index, MSI)</strong>, <strong>Нормализованный разностный инфракрасный индекс (Normalized Difference Infrared Index, NDII)</strong> используются для оценки содержания влаги в растительном покрове по значениям  в ближней инфракрасной и средней инфракрасной зонах спектра.</p>
+
+<p><strong>Стандартизованный индекс различий снежного покрова (Normalized Difference Snow Index, NDSI)</strong> разработан с целью идентификации снежного покрова и основан на соотношении данных <span class="monospace">Landsat 8</span> (каналы  <span class="backgreen">Green 3</span> и <span class="backgreen">SWIR1 6</span>) и <span class="monospace">MODIS</span> (каналы 4 и 6), что, как считается, позволяет нивелировать влияние атмосферных эффектов <a href="BIBLIO.html#Riggs1994">[Riggs et al., 1994]</a>.</p>
+<span class="monospace">
+NDSI = (Green - SWIR) / (Green + SWIR)</span>
+<br>
+
+<div class="script_01">
+<picture>
+<a id="wi_ndsi_1"><img src="Pict_3_14/wi_ndsi_1.png" width="100%" height="relative"></a>
+</picture>
+<picture>
+<a id="wi_ndsi_2"><img src="Pict_3_14/wi_ndsi_2.png" width="100%" height="relative"></a>
+</picture>
+<picture>
+<a id="wi_ndsi_L"><img src="Pict_3_14/wi_ndsi_L.png" width="15px" height="35px"></a>
+</picture>
+</div>
+<span class="imgtitle">Рис. 14.30 Стандартизованный индекс различий снежного покрова (NDSI) а) горный район, b) предгорье и освоенная равнина
+
+<p><span class="monospace">NDSI</span> в области ледников принимает максимальные (слабо положительные <span class="greencursiv">>0,08</span>) значения, слабоотрицательные (<span class="greencursiv">-0,08</span>) связаны с эрозионной сетью, отрицательные (<span class="greencursiv">-0,40</span>) свойственны скальным склонам и сельскохозяйственным угодьям (полям).</p>
+
+<p><strong>Нормализованный разностный индекс лесного снежного покрова|Normalized Difference Forest Snow Index (NDFSI)</strong> разработан как средство распознавания снежного покрова под пологом леса. Рассчитывается как:</p>
+
+<span class="monospace">
+NDFSI = (NIR - SWIR) * (NIR + SWIR)<br>
+(5 - 6) * (5 + 6)<br>
+</span><br>
+
+
+<div class="script_01">
+<picture>
+<a id="li_NDFSI_zoom"><img src="Pict_3_14/li_NDFSI_zoom.png" width="100%" height="relative"></a>
+</picture>
+<picture>
+<a id="li_NDFSI_zoom_"><img src="Pict_3_14/li_NDFSI_zoom_.png" width="100%" height="relative"></a>
+</picture>
+<picture>
+<a id="li_NDFSI_zoom_L"><img src="Pict_3_14/li_NDFSI_zoom_L.png" width="15px" height="35px"></a>
+</picture>
+</div>
+<br>
+<span class="imgtitle">Рис. 14.31 Стандартизованный индекс различий снежного покрова (NDSI) а) горный район, b) предгорье и освоенная равнина
+
+
+<p><strong>Нормализованный дифференцированный водный индекс|Normalized Difference Water Index (NDWI)</strong> разработан для исследования водных поверхностей с помощью ближнего инфракрасного диапазона и зеленой области спектра. Комбинация позволяет уменьшить влияние почвенного "шума" и растительного покрова. <span class="blackbold">NDWI</span> является важным показателем содержания воды в растениях, а также применяется для обнаружения затопленных сельскохозяйственных угодий, выявления наводнений на полях, мониторинга эффективности ирригации, определения заболоченных территорий.</p>
+<span class="monospace">
+NDWI = (Green-NIR) / (Green+NIR)<br>
+</span><br>
+
+
+<table id="customers">
+   <table border="0" >
+       <tr>
+<td><a id="wi_ndwi"><img src="Pict_3_14/wi_ndwi.png" width="350" height="relative"></a></td>
+<td><a id="vi_vari_L"><img src="Pict_3_14/wi_ndwi_L.png" width="40"></a></td>
+       </tr>
+</table>
+
+<br><span class="imgtitle">Рис. 14.32 Нормализованный дифференцированный водный индекс NDWI:  предгорье и освоенная равнина
+
+<p>Значение <span class="blackbold">NDWI</span> изменяется от <span class="greencursiv">0,0</span> для снежных и ледниковых поверхностей до <span class="greencursiv">-0,12</span> для речных долин и обводненных полей и до <span class="greencursiv">-0,5</span> для сухих склонов.</p>
+
+<p><strong>Стандартизованный индекс различий увлажненности|Normalized Difference Moisture Index  (NDMI)</strong> чувствителен к уровню влажности в растительности. Используется для отслеживания засух, а также фиксирует присутствие  горючих материалов в пожароопасных зонах. Использует каналы <span class="backgreen">NIR (5)</span> и <span class="backgreen">SWIR1 (6)</span> для создания коэффициента, предназначенного для приглушения освещения и атмосферных эффектов <a href="BIBLIO.html#Wilson_2002">[Wilson et al., 2002]</a>.</p>
+<span class="monospace">
+NDMI = (NIR - SWIR1)/(NIR + SWIR1)</span><br>
+<br>
+
+<table id="customers">
+   <table border="0" >
+       <tr>
+<td><a id="wi_ndmi"><img src="Pict_3_14/wi_ndmi.png" width="350" height="relative"></a></td>
+<td><a id="wi_ndmi_L"><img src="Pict_3_14/wi_ndmi_L.png"  width="40"></a></td>
+       </tr>
+</table>
+
+<br><span class="imgtitle">Рис. 14.33 Стандартизованный индекс различий увлажненности (NDMI):  предгорье и освоенная равнина
+
+<p>Территории с высоким значением <span class="blackbold">NDMI</span> (<span class="greencursiv">0,20-0,38</span>) - поймы рек, среднее значение около <span class="greencursiv">0,12</span> - луговые пространства, лесополосы и нижние части увлажненных склонов, низкие значения <span class="greencursiv">-0,16 < NDMI <-0,08</span> - сухие сельхозугодья, скальные склоны.</p>
+
+<p>Для определенных задач (например, для разделения глинистых и песчаных четвертичных отложений, дифференциации горных пород по содержанию железистых минералов) могут быть использованы так называемые <strong>геологические индексы</strong>.</p>
+
+<p><strong>Clay Minerals Ratio|Глинистый коэффициент</strong> - это соотношение каналов <span class="backgreen">SWIR1</span> и <span class="backgreen">SWIR2</span>. Этот коэффициент использует тот факт, что водосодержащие минералы, такие как глина и алунит, поглощают излучение в части спектра <span class="greencursiv">2,0-2,3 микрон</span>. Этот индекс снижает изменения в освещении, относящиеся к рельефу, поскольку он является коэффициентом <a href="BIBLIO.html#Alasta2011">[Alasta, 2011]</a>. Как можно видеть в пределах сцены <span class="blackbold"CMR></span> меняется от <span class="greencursiv">1,0</span> до <span class="greencursiv">1,5</span>, наименьшие значения на высоких хребтах с ледниками и снежниками, а также в пределах части сельхозугодий, наибольшая на поймах и залесенном низкогорье.</p>
+
+<span class="monospace">
+CMR = SWIR1 / SWIR2 <br>
+</span><br>
+
+<table id="customers">
+   <table border="0" >
+       <tr>
+<td><a id="gi_cmr"><img src="Pict_3_14/gi_cmr.png" width="350" height="relative"></a></td>
+<td><a id="gi_cmr_L"><img src="Pict_3_14/gi_cmr_L.png"  width="40"></a></td>
+       </tr>
+</table>
+
+<br><span class="imgtitle">Рис. 14.34 Глинистый коэффициент: предгорье и освоенная равнина
+
+<p><strong>Ferrous Minerals Ratio|Коэффициент железистых минералов</strong> выделяет все железосодержащие материалы <a href="BIBLIO.html#Alasta2011">[Alasta, 2011]</a>. Он использует соотношение между каналом <span class="backgreen">SWIR</span> и каналом <span class="backgreen">NIR</span>.</p>
+
+<span class="monospace">
+FMR = SWIR / NIR <br>
+</span><br>
+
+<p>К так называемым <strong>"ландшафтным индексам"</strong> относится <strong>Индекс выгоревших областей|Burn Area Index (BAI)</strong>, для вычисления которого используют значения отражения в красной и ближней инфракрасной области спектра для идентификации областей поверхности, подвергшихся огню <a href="BIBLIO.html#Chuvieco2002">[Chuvieco, 2002]</a>. В пределах сцены принимает отрицательные значения  от <span class="greencursiv">-0,000032</span> до <span class="greencursiv">-0,00006</span>, наибольшие значения в верхней части северо-восточных склонов.</p>
+
+<span class="monospace">
+BAI = 1/((0.1 -RED) * 2 + (0.06 - NIR) * 2)<br>
+</span><br>
+
+<p><strong>Нормализованный индекс выгоревших областей (NBRI)</strong>использует каналы <span class="backgreen">NIR</span> и <span class="backgreen">SWIR</span> для выделения выжженных областей, одновременно приглушая разницу в освещении и атмосферных явлений. Для использования рекомендуется скорректировать яркость снимков <a href="BIBLIO.html#KeyBenson2005">[Key, Benson, 2005]</a>. </p>
+
+<span class="monospace">
+NBR = (NIR - SWIR) / (NIR + SWIR)<br>
+</span><br>
+
+<table id="customers">
+   <table border="0" >
+       <tr>
+<td><a id="li_bai"><img src="Pict_3_14/li_bai.png" width="350" height="relative"></a></td>
+<td><a id="li_bai_L"><img src="Pict_3_14/li_bai_L.png"  width="40"></a></td>
+       </tr>
+</table>
+
+<br><span class="imgtitle">Рис. 14.35 Нормализованный индекс выгоревших областей (NBRI): предгорье и освоенная равнина
+
+<p><strong>Нормализованный разностный индекс застройки|Normalized index of building differences (NDBI)</strong>использует каналы <span class="backgreen">NIR </span>и <span class="backgreen">SWIR</span> (ближний инфракрасный и коротковолновый инфракрасный) для выделения областей застройки  <a href="BIBLIO.html#Zhao_et_al_2017">[Zha et al., 2003]</a>. В пределах сцены принимает значения от слабоотрицательных <span class="greencursiv">-0,36</span> до положительных <span class="greencursiv">0,16</span></p>
+
+<span class="monospace">
+NDBI = (SWIR - NIR) / (SWIR + NIR)<br>
+</span><br>
+
+<table id="customers">
+   <table border="0" >
+       <tr>
+<td><a id="li_ndbi"><img src="Pict_3_14/li_ndbi.png" width="350" height="relative"></a></td>
+<td><a id="li_ndbi_L"><img src="Pict_3_14/li_ndbi_L.png" width="40"></a></td>
+       </tr>
+</table>
+
+<br><span class="imgtitle">Рис. 14.36 Стандартизованный индекс различий застройки (NDBI):  предгорье и освоенная равнина</span></p>
+
+<p>Как можно видеть в пределах территории Приэльбрусья NDBI скорее является показателем  антропогенной измененности ландшафта: на одном конце шкалы (в оттенках синего) отрицательные значения - пойменные луга, мелколиственные и хвойные насаждений склонов, и темно-синие - заснеженные и ледниковые вершины; на другом конце шкалы - поля, населенные пункты. Возможно более яркий результат можно получить для территории крупного города.</p>
+
+<br>
+
+
+</div>
+
+<br>
+<footer id="main-footer">Пространственный анализ в геоэкологии &copy; Е.Ю.Колбовский, 2022 </footer>
+</div class="content">
+</body>
+</html>

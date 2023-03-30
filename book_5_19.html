@@ -1,0 +1,812 @@
+<!DOCTYPE html> 
+<html>
+<head>
+      <title> villages gis-modeling</title>
+      <link rel="stylesheet" href="style.css">
+      <link rel="stylesheet" href="css/font.css">
+       <link href="https://fonts.googleapis.com/css?family=Cormorant+Infant:100,100i,200,200i,300,400&display=swap" rel="stylesheet">
+      
+
+     
+</head>
+<head>
+<title>village</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+figure {
+    width: 50%; /* Ширина если надо расположить 2 картинки в ряд*/
+    float: left; /* Выстраиваем элементы по горизонтали */
+    margin: 0 0 0 0%; /* Отступ слева */
+   text-indent: 0px; /* убираем отступ для картинки как ни странно */
+   /* background: #f0f0f0; /* Цвет фона */
+    border-radius: 1px; /* Радиус скругления */
+    padding: 0%; /* Поля */
+   }
+   figure:first-child {
+    margin-left: 0; /* Убираем отступ для первого элемента */
+   }
+
+picture {
+ width: 30%; /* Ширина если надо расположить 3 картинки в ряд*/
+    float: left; /* Выстраиваем элементы по горизонтали */
+    margin: 0 0 0 0%; /* Отступ слева */
+   text-indent: 0px; /* убираем отступ для картинки как ни странно */
+   /* background: #f0f0f0; /* Цвет фона */
+    border-radius: 1px; /* Радиус скругления */
+    padding: 0%; /* Поля */
+}
+picture:first-child {
+    margin-left: 0; /* Убираем отступ для первого элемента */
+   }
+
+   image {
+    width: 100%; /* Ширина если надо расположить 1 картинки в ряд*/
+    float: left; /* Выстраиваем элементы по горизонтали */
+    margin: 0 0 0 0%; /* Отступ слева */
+   text-indent: 0px; /* убираем отступ для картинки как ни странно */
+   /* background: #f0f0f0; /* Цвет фона */
+    border-radius: 1px; /* Радиус скругления */
+    padding: 1%; /* Поля */
+   }
+</style>
+</head>
+<body>
+
+<div class="sidenav">
+
+    <a href="#h2">19. СОЦИАЛЬНО-ГЕОГРАФИЧЕСКИЙ АНАЛИЗ СЕЛЬСКОЙ МЕСТНОСТИ С ИСПОЛЬЗОВАНИЕМ ФЕНОМЕНА БЛИЗОСТИ</a>
+  
+
+    <a href="#h3_1">19.1. Постановка проблем: исчезающие деревни</a>
+    <a href="#h3_2">19.2. Статистики пространственного паттерна</a>
+    <a href="#h3_3">19.3. Деревни на рельефе: размещение в пространстве мезоформ</a>
+    <a href="#h3_4">19.4. Поселения в ландшафте: моделирование расположения и параметров близости</a>
+    <a href="#h3_5">19.5. Кластеризация населенных пунктов по расположению</a>
+    <a href="#h3_6">19.6. Оценка веса и значимости факторов расположения</a>
+    <a href="#h3_7">19.7. Регрессионный анализ  феномена людности сельских населенных пунктов</a>
+    <a href="#h3_8">19.8. Географически взвешенная регрессия</a>
+    
+</div>
+
+<div class="content">
+  
+<h2 id="heading1"> V. ДИАГНОСТИКА СЕЛЬСКОЙ МЕСТНОСТИ С ИСПОЛЬЗОВАНИЕМ ГИС-МОДЕЛИРОВАНИЯ</h2>  
+
+ <h2 id="hh2"> 19. СОЦИАЛЬНО-ГЕОГРАФИЧЕСКИЙ АНАЛИЗ СЕЛЬСКОЙ МЕСТНОСТИ С ИСПОЛЬЗОВАНИЕМ ФЕНОМЕНА БЛИЗОСТИ</h2>     
+
+<h3 id="h3_1">19.1. Постановка проблем: исчезающие деревни</h3>
+
+
+<p>Утверждение о том, что сельская местность подвержена депопуляции, забросу и запустению давно уже стало общим местом в работах по в социально-экономической географии. Понятно, что причины этого явления кроются в самых разных аспектах реальной действительности и инструментарий ГИС-моделирования тут не «всесилен». Однако можно предположить, что  какие-то факторы, вполне поддающиеся измерению, играют свою роль в этом процессе, например такие как близость к крупным и малым городам, расстояние до железнодорожных платформ и автодорог, доступность образовательных учреждений и т.д. Попробуем выстроить исследовательскую модель, которая поможет хотя бы в самом первом приближении оценить роль тех или иных факторов в сохранении обитаемости (людности) сельских населенных пунктов (НП). Выстраивая модель важно задаваться правильными вопросами, что не всегда просто <a href="#Таб 19.1">(Таблица 19.1)</a>.</p>
+
+<a id="Таб 19.1"><span class="imgtitle">Таблица 19.1 Переменные, используемые для геопространственного анализа в модели людности сельских населенных пунктов</span>
+
+
+        <table id="customers">
+        <table border="1">
+               <tr>
+                    <th>Вопросы</th>
+                    <th>Методы и подходы к решению</th>
+                    <th>ГИС-инструменты и операции</td>
+                </tr>
+                <tr>
+                    <td>Какие пространственные  закономерности свойственны локализации населенных пунктов? Является ли их распространение случайным, дисперсным или кластерным?</td>
+                    <td>Характеристика точек населенных пунктов через параметры центрографической статистики и переменные автокорреляции</td>
+                    <td>Выявление медианных центров, определение паттерна распространения населенных пунктов, принятие или отклонение "нулевой гипотезы" автокорреляции</td>
+                </tr>
+
+
+                <tr>
+                    <td>Как разделить множество населенных пунктов по  природным свойствам?</td>
+                    <td>Характеристика НП через набор природных факторов с последующей классификацией</td>
+                    <td>Формирование растров морфометрических переменных на основе ЦМР, расчет близости по отношению к природным объектам, анализ группирования и кластерный анализ</td>
+                </tr>
+                <tr>
+                    <td>Как разделить множество населенных пунктов по признакам социально-географического положения?</td>
+                    <td>Моделирование доступности через расчет близости к социальным объектам-аттракторам, таким как крупные города, центры муниципальных районов, автодороги</td>
+                    <td>Классификация растров близости, извлечение характеристик, группирование, кластеризация</td>
+                </tr>  
+                <tr>
+                    <td>Как учесть случайные (субъективные) факторы заброса и запустения населенных пунктов?</td>
+                    <td>Классификация по субъективным факторам – принадлежность к сельскому поселению может отражать фактор эффективности управления</td>
+                    <td>Индексация, классификация</td>
+                 </tr>  
+                 <tr>
+                    <td>Насколько независимы выбранные "объясняющие" факторы?</td>
+                    <td>Анализ главных компонент и определение коэффициентов корреляции и ковариации для независимых переменных</td>
+                    <td>Отбор переменных</td>
+                 </tr>  
+                 <tr>
+                    <td>Как выбранные факторы влияют на исследуемый процесс?</td>
+                    <td>Построение модели с использованием объясняющего (Exploratory) регрессионного анализа</td>
+                    <td>Отбор переменных и избавление от избыточности модели</td>
+                 </tr>  
+                 <tr>
+                    <td>Насколько корректны выбранные переменные и существует ли возможность их более "тонкой" настройки?</td>
+                    <td>Построение модели с использованием скорректированных переменных</td>
+                    <td>Повторный регрессионный анализ с новым набором переменных</td>
+                 </tr>  
+                 <tr>
+                    <td>Насколько пространственная локализация НП влияет на результаты регрессионного анализа?</td>
+                    <td>Проверка распределения точек НП на "нулевую гипотезу" и случайное распределение, построение матрицы весов</td>
+                    <td>Построение географически взвешенной регрессии</td>
+                 </tr>  
+        
+        </table>
+<br>    
+       
+
+<p>В данной модели мы будем рассматривать сельские населенные пункты как <b><i>«объект»</i></b>, обладающий свойствами, отражающими депопуляцию через параметр людности, позволяющий  разделить деревни и села на нежилые и жилые, а последние классифицировать количеству зарегистрированных жителей. В качестве факторов, тем или иным образом влияющих на людность сельских населенных пунктов,  можно привлечь как социально-географические, так и природные условия, в первую очередь такие, которые можно извлечь из доступных источников и подвергнуть моделированию в ГИС. Последним обстоятельством объясняется заведомая упрощенность используемой здесь модели, очевидно, что настоящая модель потребует привлечения многих данных из разных источников (количество непрописанных, но поддерживающих обитаемость населенного пункта городских рекреантов, категории и качество дорог, обеспеченность коммунальной и инженерной инфраструктурой, локальный рынок труда, состояние жилого фонда и т.д.).</p>
+
+<p>В качестве факторов локализации и близости в модели людности сельских населенных пунктов рассмотрим следующие группы признаков.</p>
+
+<p>Группа факторов локализации на рельефе:
+относительная высота,
+положение на форме мезорельефе. 
+
+<p>Группа факторов ландшафтного местоположения:
+близость к лесным массивам,
+близость к  рекам и озерам, 
+близость к болотам и т.д.  
+
+<p>Группа социально-географических факторов:
+удаленность от центров районов,
+удаленность от границ района,
+близость к автодорогам с твердым покрытием,
+близость к железнодорожным платформам,
+близость к вышкам сотовой связи,
+близость к учреждениям среднего образования.
+
+</p>
+
+<p>Моделирование каждой группы факторов можно рассматривать как отдельный блок модели.  Блок локализации сельских населенных пунктов (далее – НП)  включает:
+<ul><li>построение тематических (геоморфометрических) растров – производных от цифровой модели рельефа,
+<li>извлечение значения растров в полигоны НП инструментами зональной статистики,
+<li>кластерный анализ (анализ группирования) с целью выявления типологии НП по признакам положения на рельефе.
+</ul>   
+
+        <h3 id="h3_2">19.2. Статистики пространственного паттерна</h3>
+
+
+<p>Базовый слой модели, содержащий независимую переменную - людность населенных пунктов - слой <span class="backgreen">Village</span>. В <span class="red">ArcMAP10.x</span> чтобы получить векторный слой сельских населенных пунктов из исходного стандартного  слоя <span class="blackbold">OSM</span> <span class="backgreen">Settlement</span> (неважно полигонального, или точечного) можно выбрать по полю <span class="cursive">PLACE</span>  объекты со значением <span class="greencursiv">village</span> и <span class="greencursiv">hamlet</span>, затем - сохранить выборку в качестве нового слоя <span class="monospace">Data >> Export></span>.</p>
+
+<a id="00_derevni"><img src="Pict_5_19\00_derevni.png" width="55%"  height="relative"/> 
+<br><span class="imgtitle">Рис. 19.1. Людность сельских населенных пунктов Ярославской области (10 классов, естественные границы)</span><br>
+<br>
+   
+<p>Чтобы несколько упростить алгоритм моделирования  преобразуем полигоны НП в точки. Для <span class="red">AcrMAP</span> <span class="monospace">Data Management >> Features >> Feature To Point</span> (опция <span class="cursive">inside</span>); в <span class="blue">SAGA</span> <span class="monospace">Shapes|Polygon >> Polygon Centroids</span> (опция <span class="cursive">force  inside</span>). Совокупность точек, замещающих  реальные населенные пункты с их границами - допустимое упрощение в масштабе целой области (субъекта РФ), позволяющее использовать наборы инструментов центрографической статистики,  выявления паттернов и особенностей пространственной автокорреляции.</p>
+
+<p>Прежде всего интересной представляется возможность посмотреть являются ли наиболее крупные по людности населенные пункты медианными или центральными объектами в пределах соответствующих муниципальных районов. Построим статистику <span class="blackbold">Weighted Mean Center|Взвешенный Усредненный Центр</span> используя показатель людности в качестве <span class="cursive">Weight|Веса</span>, а границы районов в качестве <span class="cursive">Сase|Операционных Единиц Взвешивания</span>.</p>
+
+<p>В качестве одной из дистанционных статистик используем <span class="blackbold">Standard Deviational Ellipse|Эллипс Стандартного Отклонения</span>, отображающий смещение географического распределения.</p>
+
+<a id="00_MeanCenter"><img src="Pict_5_19\00_MeanCenter.png" width="55%"  height="relative"/> 
+<br><span class="imgtitle">Рис. 19.2. Взвешенные Усредненные Центры (голубой пунсон) для сельских НП муниципальных районов Ярославской области на фоне Эллипсов Стандартного Отклонения<br>
+
+<p>Как можно убедиться для большей части территории Ярославского Поволжья <span class="monospace">Усредненные Центры</span>  совпали или почти совпали с реальными городскими центрами муниципальных районов. Относительно "удаленными" (на расстояние около 10 км)  оказались <span class="monospace">Усредненные Центры</span> Любимского и Даниловского районов. Таким образом возникает впечатление, что городские (или крупнопоселковые) поселения формировались в пределах своего рода "центров тяжести" исторически формировавшегося "поля расселения", которое, следовательно, не является анизотропным.</p>
+
+<p>Чтобы лучше понимать природу пространственного распределения населенных пунктов, или, выражаясь языком геоинформационного моделирования определить паттерн (дисперсно-конкурентный, случайный, кластерный)  вычислим параметры <span class="blackbold">Ближайшего Среднего|Average Nearest Neighbor</span> <span class="monospace">(ArcToolBox >> Spatial Statistics Tools >> Analyzing Patterns)</span>.</p>
+
+<a id="village_P_Nearest Neighbor"><img src="Pict_5_19\village_P_Nearest Neighbor.png"width="50%" height="relative"/> 
+
+<br><span class="imgtitle">Рис. 19.3. Результаты Average Nearest Neighbor Summary для множества точек сельских населенных пунктов Ярославской области</span><br>
+
+<p>Интерпретируем результаты: <span class="monospace">Results >> Current Session  >> RC >> Average Nearest Neighbor >> LC >> Report File ... >> Messages >> LC ...</span>.</p>
+
+
+<div class="script">
+    
+    Average Nearest Neighbor Summary <br>
+    Observed Mean Distance: 1101,6<br>
+    Expected Mean Distance: 1596,4<br>
+    Nearest Neighbor Ratio: 0,690071<br>
+    z-score:    -43,063065<br>
+    p-value:    0,000000<br>
+
+</div>
+
+<p><span class="monospace">Z-оценка</span>  <span class="greencursiv">-43,06</span>  располагается <a href="#village_P_Nearest Neighbor">(Рис. 19.3.)</a> в отрицательной области шкалы и значительно ниже пограничного значения <span class="greencursiv">-2,58</span>. <span class="monospace">P-значение</span>  <span class="greencursiv">0,0000</span>, свидетельствует, что наблюдаемый кластерный паттерн не может быть результатом полной пространственной случайности. <span class="blackbold">Коэффициент Ближайших Соседей|Nearest Neighbor Ratio</span> составляет <span class="greencursiv">0,69</span> т.е., значительно меньше <span class="greencursiv">1</span> и статистически значим на данном уровне <span class="greencursiv">0,000</span> <span class="monospace">P-значения</span>, что также указывает на процесс кластеризации. Наблюдаемое среднее расстояние <span class="greencursiv">1101,6 м</span> ниже ожидаемого <span class="greencursiv">1596,4</span> почти в полтора раза, что также свидетельствует о неслучайном размещении точек населенных пунктов (расстояние между ними в кластерах - "кустах" населенных пунктов ниже, чем если бы деревни были разбросаны дисперсно).</p>
+
+<p>Построим <span class="blackbold">Ripleys K Function|Функцию К. Рипли</span> для набора точек НП, позволяющую выявить характерные дистанции, на которых происходит кластеризация объектов и/или их значений - в данном случае деревень c показателями людности в качестве весовой характеристики: <span class="monospace">ArcToolBox >> Spatial Statistics Tools >> Analyzing Patterns >> MultiDistance Spatial Cluster Analysis</span>.</p>
+
+<div class="script">
+
+Input Feature Class: villages_P <br>
+Output Table: villages_P_Riples_Funcrion <br>
+Number of Distance Bands: 10<br>
+Compute Confidence Envelope: 9_PERMUTATIONS|9 наборов точек, от которых будут строиться окружности, размещаются случайным образом,<br>
+Weight Field: Population<br>
+Beginning Distance : blanc<br>
+Boundary Correction Methods: SIMULATE_OUTER_BOUNDARY_VALUES|условие для учета точек за пределами исследуемой области, если таковые имеются, чтобы не недооценивать количество <br>соседей, для точек близких к границам,<br>
+Study Area Method: USER_PROVIDED_STUDY_AREA_FEATURE_CLASS|условие отнесения совокупности точек к изучаемому ареалу,<br>
+Study Area Feature Class: Oblast_Boundaries|указывается полигональный файл границ исследуемого ареала.<br>
+
+</div>
+
+<p>Рассмотрим результаты - <span class="monospace">график функции</span> и <span class="monospace">таблицу расстояний</span> <span class="monospace"> Results >> Messages >> LC >> Result image; LC >> Output Table >> Open</span>:</p>
+
+<a id="00_K_Ripleys_F_GRAF4"><img src="Pict_5_19\00_K_Ripleys_F_GRAF4.png"width="50%" height="relative"/> 
+<br><span class="imgtitle">Рис. 19.4. Результаты K-Ripleys Function для множества точек сельских НП с учетом "веса" по параметру людности</span><br>
+<br>
+
+<a id="00_K_Ripleys_F_table4"><img src="Pict_5_19\00_K_Ripleys_F_table4.png"width="50%" height="relative"/> 
+<br><span class="imgtitle">Рис. 19.5. Скриншот таблицы ожидаемых и наблюдаемых значений расстояний между кластерами с учетом "веса" по параметру людности выходной таблицы  Функции К. Рипли </span><br>
+
+
+<p>В таблице приведены 10 дистанций  (в метрах) -  <span class="monospace">Ожидаемых|Expected</span>  и  <span class="monospace">Наблюдаемых|ObservedK</span> значений, разница между ними <span class="monospace">DiffK</span>, а также границы <span class="monospace">Нижнего|LwConfEnv</span> и <span class="monospace">Верхнего|HiConfEnv</span> <span class="monospace">Доверительных Интервалов</span>. Наблюдаемые значения всегда меньше ожидаемых, причем по мере увеличения дистанций возрастает и различие. Диапазоны "доверительности" нарушаются на средних (4-й и 5-й) дистанциях, где значения несколько выше верхнего предела доверительного интервала. Наилучшее совпадение обнаруживается на ближних дистанциях, это означает, что <span class="bolditalic">модель, учитывающая людность населенных пунктов, более-менее близка к потенциальному равномерному распределению населенных пунктов только в пределах "кустов": чем дальше во внешнее пространство - тем хуже соответствие</span>.</p>
+
+<p>Распределение становится более понятным, если сравнить результаты <span class="monospace">Функции К. Рипли</span>  с "весом" по людности с результатами без веса, когда функция отрабатывает только локализацию точек, но не их значение.</p>
+
+<a id="00_K_Ripleys_F_GRAF3"><img src="Pict_5_19\00_K_Ripleys_F_GRAF3.png" width="55%"  height="relative"/> 
+<br><span class="imgtitle">Рис. 19.6. Результаты K-Ripleys Function для множества точек сельских НП без учета людности</span><br>
+
+<a id="00_K_Ripleys_F_table3"><img src="Pict_5_19\00_K_Ripleys_F_table3.png" width="55%"  height="relative"/> 
+<br><span class="imgtitle">Табл. 19.7. Ожидаемые и наблюдаемые значения расстояний между кластерами без учета людности НП выходной таблицы  Функции К. Рипли </span><br>
+
+
+<p>Как можно убедиться  без учета людности населенных НП реальные расстояния превышают ожидаемые во всех диапазонах расстояний, причем различия увеличиваются от ближних диапазонов к дальним, и наблюдаемые значения нигде не попадают в доверительный интервал. Таким образом <span class="bolditalic">людность населенных пунктов играет заметную роль в "искривлении" потенциального пространства расселения наподобие силы тяжести в физическом мире</span>. Можно было бы ожидать (исходя из природно-ресурсной концепции), что крупные населенные пункты, окруженные большими ареалами унаследованных угодий всех видов (пашни, пастбища, сенокосы, общинные леса),  должны как бы "отталкивать" другие деревни, что сопровождалось бы увеличенными расстояниями <span class="monospace">Функции К-Рипли</span> до ближайших "точек-событий". Однако, в действительности мы наблюдаем обратную картину, когда <span class="bolditalic">крупные по людности НП функционируют как аттракторы, формируя в окрестностях агрегаты - "кусты" из деревень</span>. Можно предположить, что такая система сельского расселения складывалась уже в конце XIX и в течении всего XX вв. в связи с функциональной (административной, агропроизводственной, торговой) специализацией населенных пунктов. Кроме того, аттракторами (по крайней мере до конца XIX в.) являлись крупные села с церквями и/или монастырями, конфигурирующие не только приходскую сеть, но и (за счет наличия в  них церковно-приходских школ)  еще и так называемые "образовательные школьные округа".</p>
+
+<p><span class="monospace">Функция К.Рипли</span> позволяет выявить характерное расстояние с наименьшими отклонениями от ожидаемых значений, лежащее в доверительном интервале, с учетом людности населенных пунктов оно составляет немногим больше <span class="greencursiv">6 км (6101 м)</span>  и может быть использовано для следующей статистики <span class="blackbold">Kernel Density Function|Функции Плотности Ядра</span>.</p>
+
+<p><span class="blackbold">Оценка плотности ядра</span> (<span class="monospace">ArcToolBox >> Spatial Analyst Tools >> Density >> Kernel Density</span>) позволяет превратить "плоское" поле точек НП в своего рода "рельефную" поверхность сельского расселения.</p>
+
+<div class="script">
+Input point features:  villages_P <br>
+Population field: Population<br>
+Output raster: P_kern_Dens<br>
+Output cell size l: 100<br>
+Search radius: 6101 *дистанция близости, выявленная в анализе Функции К. Рипли<br>
+Output values are: DENSITIES<br>
+Method: PLANAR <br>
+
+</div>
+
+
+<a id="00_Kernel_Density"><img src="Pict_5_19\00_Kernel_Density.png" width="55%"  height="relative"/> 
+<br><span class="imgtitle">Рис. 19.8. "Плотность ядер" сети сельских НП с учетом "веса" людности</span><br>
+
+<p>Параметр <span class="monospace">Kernel_Density</span> хорошо выявляет "рельеф" поля сельских НП, дифференцируя <span class="bolditalic">оси</span> (дорога Москва-Архангельск), <span class="bolditalic">узлы</span> (окрестности Ярославля и Рыбинска) а также <span class="bolditalic">плотные ареалы</span> (бассейны озер Плещеево и Неро, побережье Рыбинского водохранилища, и <span class="bolditalic">коридоры</span> (долины средних рек) сельского расселения.</p>
+
+<p>Продолжая исследование поля сельского расселения используем <span class="blackbold">Getis-Ord General G|Кластеризация с высокими/низкими значениями</span> для идентификации  статистически значимых пространственных кластеров: <span class="monospace">Arctoolbox >> Spatial Statistics Tools >> Analyzing Patterns >> High/Low Clustering (Getis-Ord General G)</span>.</p>
+
+<div class="script">
+<span class="boldcursiv">Hot Spot Analysis (Getis-Ord Gi*)</span><br>
+Input point features: villages_P <br>
+Input Field:Population<br>
+Output Feature Class: villages_P_HotSpots<br>
+Generate Report: Check the box<br> 
+Conceptualization of Spatial Relationships: INVERSE_DISTANCE<br> 
+Distance: EUCLIDEAN_DISTANCE<br> 
+Standardization: ROW<br>
+Distance Band or Threshold Distance: Leave blank<br> 
+
+</div>
+
+<p>Рассмотрим результаты: <span class="monospace">Геообработка >> Main Menu >> Geoprocessing >> Results >> Current Session >> High/Low Clustering (Getis-Ord General G)>> DC on GeneralG_Results.html</span></p>
+
+<a id="High_Low_CLUSTERr_Report_G"><img src="Pict_5_19\High_Low_CLUSTERr_Report_G.png"width="50%" height="relative"/> 
+<br><span class="imgtitle">Рис. 19.9. Кластеризация с высокими/низкими значениями (Глобальный индекс Getis-Ord G) сети сельских НП с учетом "веса" людности</span><br>
+
+<div class="script">
+Observed General G: 0,000224<br>
+Expected General G: 0,000190<br>
+Variance:   0,000000<br>
+z-score:    2,779293<br>
+p-value:    0,005448<br>
+</div>
+
+<p>При положительном значении <span class="monospace">Z-оценки</span> <span class="greencursiv">2,779293</span> и статистически значимом <span class="monospace">P-значении</span> результат может трактоваться как паттерн с кластерами высоких значений, иными словами населенные пункты с высокой людностью образуют заметные скопления (кластеры).</p>
+
+<p>Следующий вопрос, который может нас заинтересовать - расположены ли кластеры НП высокой людности на неких фиксированных расстояниях? Подобная возможность исследуется с помощью инструмента <span class="backbold">Пошаговая пространственная автокорреляция|Incremental Spatial Autocorrelation</span>: <span class="monospace">ArcToolBox >> Spatial Statistics Tools >> Analyzing Patterns >> Incremental Spatial Autocorrelation </span>.</p>
+
+<div class="script">
+Input Feature Class:  villages_P<br>
+Input Field:  Population<br>
+Number of distance bands:  10 <br>
+Beginning Distance:  Leave blank <br>
+Distance Increment:  Leave blank <br>
+Distance: EUCLIDEAN Row <br>
+Standardization:  Check the box <br>
+Output Table:  villages_P_increment <br>
+Output Table: villages_P_increment.PDF<br>
+</div>
+
+<p>Результат <span class="monospace">Incremental Spatial Autocorrelation</span> выдается в виде таблице <span class="monospace">DBF</span> и файла <span class="monospace">отчета-PDF</span> с графиком, иллюстрирующим пиковое значение, фиксирующее дистанцию, на которой наблюдается кластеризация изучаемого феномена, в данном случае - населенных пунктов.</p>
+
+<a id="00_Increment_Spatial_Auto"><img src="Pict_5_19\00_Increment_Spatial_Auto.png"width="70%" height="relative"/> 
+<br><span class="imgtitle">Рис. 19.10. График дистанции Пространственной Автокорреляции|Spatial Autocorrelation by Distance </span><br>
+
+<p>Значение дистанции, на которой наблюдается пространственная автокорреляция подтверждается в результатах работы алгоритма <span class="monospace">Results >> LC >> First Peak </span> <span class="greencursiv">14234,7</span>; в данном случае мы имеем дело с единственным "пиком" со значением чуть более <span class="greencursiv">14 км</span>.</p>
+
+<p>Используем <span class="monospace">Дистанцию Пространственной Автокорреляции</span> для вычисления <span class="monospace">Weight Matrix|Матрицы Весов</span>, которая в свою очередь необходима для последующего анализа кластеров и выбросов, а также -  географически взвешенной регрессии: <span class="monospace">ArcToolBox >> Spatial Statistics Tools >> Modeling Spatial Relationships >> Generate Spatial Weights Matrix</span>. Результат расчета - отдельный файл со специальным расширением <span class="monospace">swm</span>.</p>  
+
+<div class="script">
+    
+ Input Feature Class: villages_P <br>
+ Unique ID Field: FID <br>
+ Output Spatial Weights Matrix File: ... villages_P.swm <br>
+ Conceptualization of Spatial Relationships: FIXED_DISTANCE <br>
+ Distance Method: EUCLIDEAN <br>
+ Exponent: 1 <br>
+ Threshold Distance: 14234,7 (как результат пошаговой пространственной <br>автокорреляции в Incremental Spatial Autocorrelation) <br>
+ Number of Neighbors: 3 <br>
+ Standardization  Row : checked<br>
+
+</div>
+
+<p>Рассчитаем <span class="monospace">Кластеры и Выбросы</span> используя <span class="blackbold">Cluster and Outlier Analysis (Anselin Local Morans I)|Локальную Пространственную Автокорреляцию Морана (I)</span>: <span class="monospace">ArcToolBox >> Spatial Statistics Tools >> Mapping Clusters >> Cluster and Outlier Analysis</span>.</p> 
+
+<div class="script">
+
+Input Feature Class: villages_P.shp <br>
+Input Field :  Population <br>
+Output Feature Class:  villages_P_LocalMoranI.shp <br>
+Conceptualization of Spatial Relationships:  GET_SPATIAL_WEIGHTS_FROM_FILE <br>Weights Matrix File: villages_P.swm<br>
+Apply False Discovery Rate (FDR) Correction:  Check<br>
+
+</div>
+
+<a id="00_Cluster_Outlier_Local_MoranI"><img src="Pict_5_19\00_Cluster_Outlier_Local_MoranI.png" width="55%"  height="relative"/> 
+<br><span class="imgtitle">Рис. 19.11. Кластеры и Выбросы (локальная Пространственная Автокорреляция Морана) для сельских НП Ярославской области  </span><br>
+
+<p>Картограмма демонстрирует, что абсолютное большинство сельских НП образуют массив фоновых значений, которые нельзя отнести ни к выбросам, ни к "горячим" точкам. Картина распределения лишена также  выбросов низких значений - ненаселенных (или с очень небольшим числом обитателей) деревень так много, что они не могут считаться выбросами, скорее образуют часть фона, распространены повсеместно и потому не формируют "холодных" кластеров. В распределении представлены выбросы высоких значений, часть из которых - центры муниципальных округов, не имеющие статуса города, часть - крупные поселки, в том числе на окраинах городских агломераций Рыбинска и Ярославля.</p>
+
+<p>Соответственно в таблице слоя <span class="monospace">Кластеры </span>и <span class="monospace">Выбросы </span>мы обнаружим только два типа значений: "HH" и "HL"</p>
+
+<div class="script_01">
+<figure>
+<a id="00_HH_Clusters"><img src="Pict_5_19\00_HH_Clusters.png" width="100%" height="relative"></a>
+</figure>
+<figure>
+<a id="00_HL_Clusters"><img src="Pict_5_19\00_HL_Clusters.png" width="100%" height="relative"></a>    
+</figure>
+</div>
+<br><span class="imgtitle">Рис. 19.12. Кластеры HighHigh (а) и HighLow (b)
+
+<p>Распределение кластеров <span class="monospace">HighHigh</span>   и  <span class="monospace">HighLow </span>также выглядит закономерным <a href="#00_HH_Clusters">(Рис. 19.12.)</a>: первые "привязаны" к федеральной трассе Москва-Ярославль и долине Волги в предместьях Рыбинска, вторые более-менее хаотично разбросаны в границах сельских муниципальных округов и действительно окружены полупустующими или малонаселенными деревнями.</p>
+<br>
+
+
+<h3 id="h3_3">19.3. Деревни на рельефе: размещение в пространстве мезоформ</h3>
+
+
+
+<p>Базовый слой ЦМР  - модель ASTER GDEM2 <span class="greencursiv">90 m</span>  в пикселе;
+ служит основой для получения необходимых производных тематик:</p>
+<ul><li>нормализованная высота (показатель, переводящий абсолютные значения в значения шкалы от 0 до 1, что необходимо для последующего кластерного анализа);
+<li>геоморфоны – дифференциация мезоформ рельефа с использованием «машинного обучения» и «плавающего окна». 
+</ul>	  	
+<p>Поскольку <span class="red">ArcMAP10.x</span> не богат собственными инструментами работы с рельефом откроем <span class="blue">SAGA GIS</span> загрузим файл ЦМР Ярославской области.</p>
+
+
+<img src="Pict_5_19\01_dem_saga.png" width="55%"  height="relative"/>
+<br><span class="imgtitle">Рис. 19.13. Цифровая модель рельефа территории Ярославской области ASTER GDEM2</span></p>
+</img >
+
+<p>Для получения необходимых геоморфометрических тематик мы будем использовать две утилиты.:  <span class="blackbold">Relative Heights and Slope Positions</span> (<span class="monospace">Terrain Analysis >> Morphometry</span>), для расчета пяти метрик, из которых нам потребуется нормализованная высота <span class="blackbold">Normalized Height</span>.</p>
+
+<p>Результат отличается от исходной ЦМР, поскольку нормализация шкалы обеспечивает более локальную проработку деталей рельефа.</p>
+
+<img src="Pict_5_19\05_norn_height.png" width="55%"  height="relative" />
+<br><span class="imgtitle">Рис. 19.14. Нормализованная высота Normalized Height SAGA</span><br>
+
+<p>Инструмент Geomorphons имеет непростой  интерфейс с несколькими опциями, т.к., по сути, это довольно сложная модель. Опции инструмента, которые придется поменять при его запуске:
+<ul><li>Threshold Angle – пороговое значение уклона, отделяющее плоский рельеф от склонов; оставляем без изменений;
+<li>Radial Limit– максимальный радиус «окна»; по умолчанию 10000, но для условия равнины выставляем 5000;
+<li>Method – по умолчанию «line tracing»  - не меняем.</ul>
+</p>
+  
+<p>Итогом работы инструмента является атрибутированный растр, который в <span class="blue">SAGA GIS</span> сопровождается семантической легендой, однако при импорте растра  в <span class="red">ArcMAP10.x</span> мы сможем открыть таблицу слой и увидим значения <span class="cursive">Value (Long)</span> от <span class="greencursiv">1</span> до <span class="greencursiv">10</span>, которые расшифровываются следующим образом <a href="Pict_5_19\06_geomorpon_fragm.png">(рис. 19.15)</a>:</p>
+
+<div class="script_01">
+<figure>
+<img src="Pict_5_19\06_geomorpon_fragm.png" width="100%" height="relative"></a>
+</figure>
+<figure align=left>
+<img src="Pict_5_19\06_geomorpon_l.png" width="30%" height="relative"></a> 
+</figure>
+</div>
+<br><span class="imgtitle">Рис. 19.15 Геоморфоны: фрагмент карты и расшифровка значений атрибутов растра</span></p>
+
+<p>Чтобы как-то уравнять «в правах» две метрики рельефа, классифицируем в <span class="red">ArcMAP10.x</span>  растр <span class="monospace">Normalized Height</span> на 10 классов способом Natural breaks (Jenks): (<span class="monospace">Spatial Analyst Tools >> Reclassify</span>). Для удаления возможных «шумов» применим к классифицированному растру инструмент генерализации  <span class="blackbold">Boundary clean|Удаление границ</span>, опция <span class="cursive">Descent</span>.</p>
+
+<img src="Pict_5_19\06_norn_height_r.png" width="55%"  height="relative"> 
+   <br><span class="imgtitle">Рис. 19.16 Реклассифицированный растр Normalized Height</span></p>
+
+<p>Следующая задача – извлечь значения обеих тематик (факторов рельефа)  в shape-слой   населенных пунктов. В <span class="red">ArcMAP10.x</span> это удобнее всего сделать с помощью инструмента <span class="blackbold">Extract Multi Values to Points|Извлечь значения многих растров в точки</span> <span class="monospace">(Spatial Analyst >> Extraction)</span>; в <span class="blue">SAGA GIS</span> 
+ <span class="blackbold"> - Add Grid Values to Points</span> <span class="monospace">(Shapes >> Shape-Grid Tolls)</span>. Интерфейс инструментов аналогичен, на выходе получаем новые поля в таблице шейпа НП с извлеченными значениями геоморфонов и нормализованной высоты.</p>
+
+<img src="Pict_5_19\07_point_extract_table.png" width="50%" height="relative"/> 
+ <br><span class="imgtitle">Рис. 19.17 Новые поля с извлеченными значениями геоморфонов и нормализованной высоты в таблице НП</span></p>
+	
+<p>Чтобы получить начальное представление о типах локализации населенных пунктов относительно условий рельефа проведем кластеризацию  в <span class="red">ArcMAP10.x</span> используя инструмент <span class="blackbold">Анализ группирования</span> (<span class="blackbold">(Spatial Statistic Tools Mapping >> Clusters >> Grouping Analysis)</span>, опция  <span class="cursive">without spatial restrictions</span>) и с возможностью определения оптимального числа групп.  Результат группирования (кластеризации) подвергнем слиянию (<span class="blackbold">Dissolve</span>), предварительно определим необходимые виды статистик, которые дают нам  общую характеристику полученных кластеров.</p>
+
+<img src="Pict_5_19\08_type_village_cosmo.png" width="55%"  height="relative"alt="c:|Users|kolbo|Documents|!!!_Word_Press|04_|Pict_5_19\" /> 
+<br><span class="imgtitle">Рис. 19.18 Кластеры  НП, полученные Анализом Группирования по типу рельефа и классам нормализованной высоты места (фрагмент)</span></p>
+
+<p>Для параметра нормализованной высоты логично вычислить среднее значение группы <span class="cursive">MEAN</span>,  а вот для десяти категорий мезорельефа (геоморфонов) «среднее»  не имеет смысла, поэтому определяем диапазон <span class="monospace">RANGE</span> чтобы представлять однородность значений в группе. Для общей ориентировки закажем еще  <span class="cursive">FIRST</span> (т.е., первое конкретное значение); тогда при минимальном <span class="greencursiv">1</span> или нулевом значении диапазон, <span class="cursive">FIRST</span>, по сути, и будет формой мезорельефа в данном кластере.</p>
+
+<img src="Pict_5_19\08_type_village_tabl.png" width="50%" height="relative"/> 
+<br><span class="imgtitle">Рис. 19.19 Скриншот таблицы с характеристиками  кластеров, полученными в результате Слияние (Dissolve)</span></p>
+
+<p>Объединенная  таблица дает нам возможность судить о типах локализации сельских населенных пунктов Ярославской области на рельефе. Так очевидно, что НП кластеров <span class="greencursiv">1</span> и <span class="greencursiv">2</span>  находятся в самых низких местоположениях – на дне тектонически обусловленных лимно-аллювиальных котловин, при этом кластер <span class="greencursiv">2</span> – это локальные превышения (супесчаные материковые дюны и гривы) озерных пойм и террас: достаточно характерные местоположения для всего региона Верхней Волги (число населенных пунктов - <span class="greencursiv">532</span> и <span class="greencursiv">413</span> соответственно). В совершенно иных условиях НП кластера <span class="greencursiv">8</span>, приуроченные к вершинам водоразделов с истоками рек; в данном классе  наблюдается разнообразие форм мезорельефа (вершины и склоны холмов), в том числе – хорошо дренированные контрфорсы локальных склонов (мезоформа <span class="greencursiv">5</span>).
+
+<p>Кластеризацию, как мы уже знаем, можно провести и в <span class="blue">SAGA GIS</span>. Шейп точек <span class="backgreen">Villige_points</span> с извлеченными параметрами рельефа отправляем в <span class="blackbold">Cluster Analysis (Shapes)</span>  (<span class="monospace">Table >> Calculus</span>),  опция <span class="cursive">combined method</span>). Результат, полученный в <span class="blue">SAGA GIS</span> даже с тем же числом кластеров (<span class="greencursiv">9</span>), будет несколько отличаться от <span class="blackbold">Анализа Группирования</span> в <span class="red">ArcMAP10.x</span>, хотя мы легко сможем обнаружить здесь те же типы локализаций. Выбор инструмента, как обычно, остается за экспертом.</p>
+<br>
+
+    
+  <h3 id="h3_4">19.4. Поселения в ландшафте: моделирование расположения и параметров близости</h3>
+
+
+<p>Следующий блок моделирования – определение близости населенных пунктов к различным физико-географических объектам.
+Сначала необходимо подготовить слои с выбранными для анализа объектами. Природные  объекты, относительно которых будет измеряться расстояния, извлекаются (<span class="blackbold">Select by attributes</span>)  запросом  из таблиц соответствующих стандартных  слоев карт <span class="monospace">OSM</span>:<br>
+
+- <b>леса</b> из слоя <span class="backgreen">vegetation-polygon.shp</span> запросом  <span class="cursive">"NATURAL"='wood’</span>;<br>
+- <b>болота</b> из слоя <span class="backgreen">water-polygon</span> запросом  <span class="cursive">"NATURAL"='wetland’</span>;<br>
+- <b>озера и водохранилища</b> из  слоя <span class="backgreen">water-polygon</span> запросом  <span class="cursive">"NATURAL"='water’</span>;<br>
+- <b>реки</b> из слоя <span class="backgreen">water-line</span> запросом <span class="cursive">"WATERWAY"='river' OR "WATERWAY"='stream’</span>.
+</p>
+
+<img src="Pict_5_19\10_example_rivers.png"width="55%"  height="relative"/>
+<br><span class="imgtitle">Рис. 19.20 Фрагменты исходных векторных слоев для анализа близости: реки, болота и центроиды населенных пунктов</span></p>
+
+<p>Создание новых слоев выборкой в <span class="blue">SAGA GIS</span>  проводится аналогичными способом с помощью инструмента <span class="blackbold">Select by String Expression</span> (группа <span class="monospace">Shapes</span>, набор <span class="monospace">Tools</span>). Опции: <span class="cursive">Attribute</span>, поле выбора – <span class="cursive">Expression|Выражение</span>. Единственное отличие – выражение придется составлять самостоятельно без «подсказки», например: <span class="cursive">"NATURAL"='wetland’</span>; синтаксис <span class="monospace">SQL</span> работает и в <span class="blue">SAGA GIS</span>;  важно выбрать опцию <span class="cursive">Select if... attribute is contained in search expression</span>. Корректность выборки можно проверить открыв таблицу атрибутов слоя (<span class="monospace">Attributes >> Show</span>).</p> 
+
+<img src="Pict_5_19\10_SAGA_selection_attrb.png" width="50%" height="relative"/>
+<br><span class="imgtitle">Рис. 19.21 Выбор по атрибутам поля в ГИС SAGA</span></p>
+
+<p>Следующее  действие (после  выборки):  запуск инструмента <span class="blackbold">Copy Selection to New Shapes Layer|Копировать Выборку в Слой</span> из того же набора <span class="monospace">Tools </span>с опцией <span class="cursive">Create|Создать слой</span>. Образуется новый слой <span class="backgreen">water-polygon [Selection]</span>, который необходимо переименовать (например, <span class="backgreen">Wetland</span>), используя диалог  <span class="monospace">Setting</span> поля <span class="cursive">Name</span> и после этого сохранить. Не забывайте снять выборку в исходном слое (<span class="blue">SAGA GIS</span> не делает это автоматически) по правой кнопке мыши <span class="cursive">Edit >> Clear Selection</span>.</p>
+
+<p>Определение близости относительно любых географических факторов, содержащихся в векторных слоях любого вида – точечных, полилинейных, полигональных  - может быть произведено в <span class="red">ArcMAP10.x</span> инструментом <span class="blackbold">Near</span>  группы <span class="monospace">Proximity</span> набора <span class="monospace">Analysis Tools</span>; для полигонов в большинстве случаев справедливо измерять близость от центроида НП. </p>
+
+<img src="Pict_5_19\09_near_intrfc_2.png" width="200" height="relative" />
+<br><span class="imgtitle">Рис. 19.22 Интерфейс инструмента Near в ArcMAP10.x</span></p>
+    
+<p>Инструмент  <span class="blackbold">Near</span> лучше отработает с файлами <span class="monospace">Базы Данных</span> поэтому имеет смысл сначала перевести шейп-файл утилитой <span class="blackbold">Conversion</span> в <span class="blackbold">Feature Class to Geodatadbase</span>. Запускаем инструмент <span class="blackbold">Near</span> – если в качестве объектов поместить в <span class="monospace">Near Features</span>  сразу все четыре слоя, то в выходном файле мы получим две колонки – тип ближайшего объекта и расстояние до этого объекта.</p>
+
+<img src="Pict_5_19\10_near_4_factor.png" width="50%" height="relative" />
+<br><span class="imgtitle">Рис. 19.23 Результат расчета близости по четырем слоям одновременно</span></p>
+
+<p>Если измерять расстояние до объектов одного слоя, то результатом работы инструмента <span class="blackbold">NEAR</span> является добавление двух колонок к исходной таблице населенных пунктов, в первой записывается  <span class="backgreencursiv">FID</span> ближайшего к данной точке (деревне) объекта-фактора (города, реки, леса), во второй колонке  <span class="backgreencursiv">NEAR_Dist</span> – расстояние до этого объекта. </p>
+
+<img src="Pict_5_19\10_near_1_fact.png" width="50%" height="relative" />
+<br><span class="imgtitle">Рис. 19.24 Результат расчета близости по единственному слою реки (полилинии)</span></p>
+
+<p>При каждом запуске алгоритма эти две строчки переписываются, поэтому для того, чтобы их сохранить лучше создать колонки с другим именем, введя в название полей имя фактора  (например,  <span class="backgreencursiv">RIVER_D</span>) и перекопировать туда значения <span class="backgreencursiv">NEAR_DIST</span>; заодно можно просто удалить ненужные поля (<span class="backgreencursiv">NEAR_FC</span> и <span class="backgreencursiv">NEAR_FID</span>, обозначающее  идентификатор ближайшего объекта, например – реки).</p>
+
+<img src="Pict_5_19\10_near_1_fact_change.png" width="50%" height="relative"/>
+<br><span class="imgtitle">Рис. 19.25 Измененная таблица близости рек</span></p>
+
+<p><b><i>Социальные объекты</b></i>, относительно которых мы должны измерить расстояния также  извлекаются запросом  из слоев карт <span class="monospace">OSM</span>:<br>
+
+- <b>города</b> из слоя <span class="backgreen">settlement-polygon.shp </span>запросом   <span class="cursive">select from WHERE "PLACE" IN ('city', 'town')</span>;<br>
+- <b>дороги с твердым покрытием</b> из слоя <span class="backgreen">highway-line</span> запросом <span class="cursive"> select from WHERE "HIGHWAY" IN ('primary',
+'primary_link', 'secondary', 'secondary_link', 'tertiary', 'tertiary_link', 'residential', 'trunk', 'trunk_link')</span>;<br>
+- <b>железнодорожные станции и платформы</b> - слой <span class="backgreen">railway-platform-polygon</span>;<br>
+- <b>границы районов</b> из слоя <span class="backgreen">boundary-polygon</span> запросом  <span class="cursive">"ADMIN_LVL": ‘6’</span> и последующим превращением полигонов в полилинии (<span class="monospace">Data Management Tools >> Feature >> Feature To Line</span>).
+</p>
+
+<p>С помощью инструмента <span class="blackbold">NEAR</span> рассчитываем параметры близости поочередно для всех выбранных факторов, преобразуя полученные колонки значений как показано выше.
+Результирующая таблица может выглядеть следующим образом <a href="#Pict_5_19\12_all_natur_antrop_fact_7cl_tabl.png">(рис. 19.26)</a> </p>
+
+<img src="Pict_5_19\12_all_natur_antrop_fact_7cl_tabl.png" width="50%" height="relative" />
+<br><span class="imgtitle">Рис. 19.26 Результирующая таблица с извлеченными  характеристиками расстояний от НП до ближайших объектов транспортной и социальной инфраструктуры</span></p>
+
+<p>В <span class="blue">SAGA GIS</span> аналогичный инструмент определения расстояния до ближайшего объекта <span class="blackbold">Point Distances</span> принадлежит набору <span class="monospace">Points</span> группы <span class="monospace">Shapes</span> и работает только с векторными файлами точек. Чтобы получить значение минимального расстояния для каждой точки необходимо включить опцию <span class="cursive">Each pair with a single records</span>. На выходе инструмента таблица с  тремя  значимыми полями: <br>
+<span class="backgreencursiv">ID POINT</span> - идентификатор точки базового слоя,<br> 
+<span class="backgreencursiv">ID NEAR</span> - идентификатор точки объекта, до которого определяется расстояние,<br> 
+<span class="backgreencursiv">DiSTANCE</span> – собственно расстояние.</p>
+
+<img src="Pict_5_19\05_SAGA_point_distance.png" width="50%" height="relative"/>
+ <br><span class="imgtitle">Рис. 19.27 Диалоговое окно инструмента Point Distances SAGA</span></p>
+
+<p>Далее алгоритм действий в <span class="blue">SAGA GIS</span> аналогичен описанному выше: оставляем два поля переименовав их понятным образом: идентификатор точки населенного пункта и расстояние до объекта, по полю <span class="backgreencursiv">ID</span>  привязываем таблицу к базовому файлу населенных пунктов утилитой <span class="blackbold">Append Fields from another Table</span> из набора <span class="monospace">Tools</span> группы <span class="monospace">Table.</span></p>
+<br>
+
+
+
+  <h3 id="h3_5">19.5. Кластеризация населенных пунктов по расположению</h3>
+
+ 
+<p>Для начала  проведем <span class="blackbold">Анализ Группирования</span> (<span class="red">ArcMAP10.x</span>)  по близости населенных пунктов к природным и социально-инфраструктурным объектам, добавив к переменны близости два параметра рельефа. Определяем оптимальное число классов (без пространственных ограничений), оцениваем его с позиций здравого смысла и нашей интуиции: соглашаемся с предложенным числом классов или придумываем свое заветное число  и затем получаем окончательный результат с новым значением.
+
+<p>Полученные результат объединяем (<span class="blackbold">DISSOLVE</span>) но номеру кластера <span class="monospace">SS Group</span>. При слиянии для параметра <span class="monospace">Типов рельефа|Geomorphones</span> имеет смысл в качестве статистики использовать <span class="cursive">RANGE</span>  и <span class="cursive">FIRST</span>. Проведенная таким образом кластеризация (в более привычном понимании - классификация) "выдает" семь неплохо интерпретируемых кластеров <a href="#Pict_5_19\12_all_natur_antrop_fact_7cl">(Рис. 19.28)</a>.</p>
+
+<img src="Pict_5_19\12_all_natur_antrop_fact_7cl.png" width="55%"  height="relative"/>
+ <br><span class="imgtitle">Рис. 19.28 Итоговая типология населенных пунктов по совокупности природных и социальных факторов расположения</span></p>
+
+<p><span class="bolditalic">Первый  класс</span> (голубые пунсоны) - это прежде всего высоко расположенные НП (<span class="greencursiv">7,5</span> - среднее значение нормализованной высоты) в отдалении от рек, но при этом близко к водораздельным озерам и окружающим их, как правило,  болотным массивам; далеко от городов, но в сравнительно неплохих транспортных условиях (автодороги и железнодорожные платформы).</p>
+
+<p>Близок к первому <span class="bolditalic">седьмой класс</span> (бледно-желтые пунсоны) тоже водораздельные населенные пункты, но уже расположенные на более низком уровне  с усредненными прочими показателями.</p>
+
+<p><span class="bolditalic">Второй класс (красные пунсоны)</span> – это в основном пригородные деревни (самая короткая средняя дистанция до центров) с наилучшим транспортным (близость к дорогам и ж/д платформам) положением, при этом находящиеся на низком уровне тектонически обусловленных низин (озерные и речные террасы) и, соответственно, близко к озерам и рекам. </p>
+   
+<p><span class="bolditalic">Третий  класс</span> (зеленые пунсоны)  выделились как «приречные» НП, разместившиеся вдоль средних и, частично, крупных  рек (первая позиция близости) на низком топографическом уровне (<span class="monospace">Hnorm </span> <span class="greencursiv">2,9</span>) в залесенных и плохо дренированных (близость к болотам) ареалах на периферии сельских районов.</p>
+
+<p><span class="bolditalic">Пятый класс</span> (фиолетовые пунсоны) выделился по отдаленности от районных центров, максимальной отдаленности от автодорог и железнодорожных платформ, а также близости к границам районов, таким образом это населенные пункты своего рода "медвежьих углов".</p> 
+
+<p><span class="bolditalic">Четвертый  класс</span> (желтые пунсоны) – это деревни на хорошо дренированных средневысотных водоразделах в аграрно освоенных ареалах, что определяется по  максимальной дальности от лесов и болот.</p>
+
+<p> <span class="bolditalic">Шестой  класс</span> (оливковые пунсоны) – могут быть отнесены к приречным, но при этом расположены на более высоком  (<span class="monospace">Hnorm</span> <span class="greencursiv">3,3</span>) уровне унаследованных надпойменных речных и озерных (вдоль Рыбинского водохранилища)  террас в залесенных местностях по близости от районных центров (следовательно – далеко от границ).</p>
+
+<p>Таким образом, поскольку по меньшей мере пять из семи классов выделились по наличию двух ярко выраженных признаков (по которым они занимают первую или вторую позицию в соответствующих полях значений) классификация в цело можно считать удовлетворительной и подлежащей содержательной классификации.</p>
+<br>
+   
+
+
+    <h3 id="h3_6">19.6 Оценка веса и значимости факторов расположения</h3>
+
+<p>До сих пор мы исходили из предположения, что все рассматриваемые в модели  факторы (независимые переменные) равны по влиянию на изучаемый феномен людности НП. Однако так ли это на самом деле? Разумеется, нет, поскольку  навряд ли близость к железнодорожной платформе или к районному центру это равнозначные факторы. Вес факторов можно определять разными (совсем не обязательно - альтернативными) способами:
+
+    <ul><li><p>полагаясь на экспертное мнение и/или интуицию;</li>
+        <li><p>"взвешивая" факторы разными способами (обычно этот подход выливается в самостоятельное исследование);</li>
+        <li><p>изучая гистограммы или графики распределения каждого фактора в отдельности.</li>
+    </ul> 
+    
+<p>Последний способ (не предполагающий дополнительных исследований) может быть использован в нашем случае. Мы располагаем данными о близости каждого населенных пунктов региона к объектам, представляющим конкретный фактор (реке, озеру, районному центру и т.д.). Если классифицировать параметр близости, скажем, на пять классов способом <span class="cursive">естественные границы</span>, то можно определить какой процент деревень попадает в первый класс. Далее логично предположить, что если в первый класс близости попадает существенная доля населенных пунктов, то этот фактор - значительный аттрактор.</p>
+
+<p>Посмотрим более внимательно на нашу базовую таблицу файла точек-центроидов населенных пунктов, содержащую поля расстояний до 8 различных типов природных и социально-инфраструктурных факторов <a href="#Pict_5_19\00_basa_dereven_points.png">(Рис. 19.29)</a>.</p>
+
+<img src="Pict_5_19\00_basa_dereven_points.png" width="90%" height="relative">
+<br><span class="imgtitle">Рис. 19.29 Общий вид таблицы базового точечного  слоя населенных пунктов с полями дистанций до различных объектов </span></p>
+        
+<p>Если классифицировать множество населенных пунктов по близости к рекам на пять классов, получится следующая гистограмма, фиксирующая граничные значения между классами <a href="#01_gistigramm_near_river">(Рис. 19.30)</a>:<br>
+<span class="bolditalic">1-й класс</span> - в пределах <span class="greencursiv">802 м</span> (от реки), <br>
+<span class="bolditalic">2-й класс</span> - от <span class="greencursiv">803 м</span> до <span class="greencursiv">1343 м</span>, <br>
+<span class="bolditalic">3-й класс</span> - от <span class="greencursiv">1344 м</span> до <span class="greencursiv">2262 м</span>, <br>
+<span class="bolditalic">4-й класс</span> - от <span class="greencursiv">2263 м</span> до <span class="greencursiv">3555 м</span>, <br>
+<span class="bolditalic">5-й класс</span> - от <span class="greencursiv">3556 м</span> до <span class="greencursiv">8269м</span>. <br>
+</p>
+
+ <img src="Pict_5_19\01_gistigramm_near_river.png" width="55%"  height="relative">
+<br><span class="imgtitle">Рис. 19.30 Гистограмма распределения значений близости НП к малым и средним рекам</span></p>
+
+<p>Таким образом можно получить представление о граничных значениях между классами близости/удаленности НП, далее можно произвести последовательную выборку каждого класса и вычислить долю (%) населенных пунктов, в каждом классе: чем выше доля объектов в первых двух классах близости к конкретному типу объектов (автодорога или река), тем большую роль играл этот тип в локализации сел и деревень.</p>
+        
+<p>Возможно, наиболее простым способом определения "веса" признака является создание растров для каждого фактора близости с одновременной классификацией  получаемых растров на пять классов способом <span class="cursive">natural breaks</span>. Для экономии усилий составляем простенький "двухходовый"" алгоритм в  <span class="blackbold">Model Builder</span> <span class="red">ArcMAP10.x</span>:</p>
+
+<img src="Pict_5_19\03_point_rastr_slice.png" width="55%"  height="relative"> 
+<br><span class="imgtitle">Рис. 19.31 Структура модели для получения классифицированных растровых значений близости</span></p>
+
+<p> На вход инструмента <span class="blackbold">Points to Raster</span> подаем поочередно поля значений <span class="backgreencursiv">Value</span> близости к объектам (рекам, лесам, дорогам и т.д.)  базового файла центроидов НП. Опция <span class="cursive">Cell</span> определяет размер ячейки растра - в нашем случае он может быть достаточно "грубым" (<span class="greencursiv">250</span> или даже <span class="greencursiv">500</span>)  чтобы не увеличивать размер растра; далее полученный растр  классифицируем на 5 таксонов инструментом <span class="blackbold">Slice</span> (<span class="cursive">Number</span> - число классов, опция <span class="cursive">Slice</span> определяет метод - здесь выбираем <span class="cursive">Natural Breaks</span>; результат записываем как атрибутированный растр с соответствующим названием (например, <span class="backgreen">River_D</span>).</p>  
+
+<img src="Pict_5_19\04_river_d_5class.png" width="55%"  height="relative"> 
+<br><span class="imgtitle">Рис. 19.32 Растровый слой пяти классов близости НП к малым и средним рекам</span></p>
+
+<p>Теперь используя поле <span class="backgreencursiv">Count</span>  (предварительно скопировав статистку <span class="backgreencursiv">Summ</span>) атрибутированного растра  мы можем подсчитать в калькуляторе растра для специально введенного нового поля <span class="backgreencursiv">Prcnt</span> сколько процентов попадает в каждый из классов близости:</p>
+[Count] / 5263 *100) <br>
+
+<div class="script_01">
+<figure align=right>
+<img src="Pict_5_19\05_table_raster_distance.png" width="200"  height="150"></a>
+</figure>
+<figure align=left>
+<img src="Pict_5_19\05_table_raster_prcnt.png" width="200" height="150"></a>    
+</figure>
+</div>
+<br><span class="imgtitle">Рис. 19.33 Расчет доли (%) объектов, попадающих в различные классы близости для параметра расстояния до малых и средних рек
+
+<p>Очевидно, что в первые два класса близости к рекам попадают <span class="greencursiv">76%</span> (<span class="greencursiv">52%</span>  1-й класс плюс <span class="greencursiv">24%</span> 2-й класс), что безусловно свидетельствует о существенном весе данного фактора. Теперь необходимо повторить эту процедуру (меняя только значение <span class="backgreencursiv">Value</span> и имя выходного атрибутированного растра для остальных семи факторов. Сравним полученные таблицы долевого соотношения принадлежности к классам близости для разных факторов.</p>
+<br>
+<div>
+    <img src="Pict_5_19\05_table_RIVER_prcnt.png" width="118" height="96"> 
+    <img src="Pict_5_19\05_table_LAKE_prcnt.png" width="118" height="96"> 
+    <img src="Pict_5_19\05_table_Forest_prcnt.png" width="118" height="96"> 
+    <img src="Pict_5_19\05_table_Wetland_prcnt.png" width="118" height="96"> 
+</div>
+<div>
+    <img src="Pict_5_19\05_table_Town_prcnt.png" width="118" height="96"> 
+    <img src="Pict_5_19\05_table_Bound_prcnt.png" width="118" height="96"> 
+    <img src="Pict_5_19\05_table_Road_prcnt.png" width="118" height="96"> 
+    <img src="Pict_5_19\05_table_RLWay_prcnt.png" width="118" height="96"> 
+<br><span class="imgtitle">Рис. 19.34 Таблицы классов близости для различных объектов модели, слева-направо в верхнем ряду: River_D - расстояние до малых и средних рек, Lake_D - расстояние до крупных рек, озер и водохранилищ, Forest_D - до лесных массивов, Wetland_D - до болот; в нижнем ряду: Town_D - расстояние до города, BOUNDR_D - расстояние до границ района, ROAD_D - расстояние до автомобильных дорог с твердым покрытием, RAILWAY_D - расстояние до ж/д платформ
+</div>
+
+<p>Легко заметить, что "сильными" аттракторами являются три из четырех природных (близость к малым и средним рекам, близость к крупным рекам, озерам и водохранилищам и близость к лесным массивам), для которых первые два класса охватывают более <span class="greencursiv">75%</span> всей совокупности сельских НП.</p>
+
+<p>Близость к центру района и близость к границам района - это, по сути, два фактора антипода: иными словами, чем ближе к центру, тем одновременно дальше от границ. Кривая распределения для этих факторов сглажена и первые три класса почти равны между собой. То же относится и к расстоянию до железных дорог. Объяснить это обстоятельство можно разными причинами, но, в первую очередь тем, что возникновение большей части НП относятся к периоду, когда границы соответствующих административных образований были иными, и часть нынешних центров не выполняла соответствующих функций, поскольку уездов XIX века было почти вдвое меньше, чем нынешних районов.</p> 
+
+<p>Для приближения состава модели к сегодняшней реальности пробуем добавить дополнительный фактор, который в нашем представлении может оказывать воздействие на людность населенных пунктов - расстояние до вышек сотовой связи. Используя слой <span class="backgreen">poi-point</span>  набора <span class="monospace">OSM</span>, выбираем вышки запросом <span class="cursive">Select By Atribut: "MAN_MADE": 'tower'</span>. Далее по уже известному алгоритму определим расстояния от НП до вышек мобильной связи и дополним базовый слой <span class="backgreen">villages_P</span> еще одним полем <span class="backgreencursiv">Tower_D</span>, по которому построим классифицированный на пять таксонов растр близости-удаленности <a href="#06_Tower_Mobile">(Рис. 19.35)</a>.</p>
+
+    <img src="Pict_5_19\06_Tower_Mobile.png" width="55%"  height="relative"> 
+<br><span class="imgtitle">Рис. 19.35  Пять классов НП Ярославской области по близости к вышкам сотовой связи</span></p>
+
+<p>Если "взвесить" этот фактор уже апробированным способом, то окажется, что он "безразличен" как бы сказали философы - вышки ставятся в основном не для удовлетворения потребностей жителей сельской местности, что подтверждается характером распределения - первый класс оказывается не самым многочисленным, и это при том, что абсолютные расстояния начиная с третьего класса (7615-2158 м) уже не обеспечивают надежного приема.</p>
+
+<div class="script_01">
+<figure >
+<img src="Pict_5_19\06_Tower_D.png" width="200" height="150"></a>
+</figure>
+<figure align=right>
+<img src="Pict_5_19\06_Tower_D.metr.png" width="150" height="150"></a>  
+</figure>
+</div>
+<br><span class="imgtitle">Рис. 19.36 Таблица классов классифицированного растра  удаленности вышек сотовой связи</span></p>
+
+<p>Наконец, рассчитаем еще один фактор, который не так просто извлечь из слоев <span class="monospace">OSM</span>, поэтому он прилагается здесь уже в готовом виде - сеть образовательных учреждений (школ). Известно, что закрытие школ приводит к "отмиранию" сети населенных пунктов, по той простой причине, что молодые люди не видят перспективы для образования своих детей. В этой связи доступность школ давно уже стала важным фактором людности населенных пунктов. Определим расстояние до ближайшего образовательного учреждения, добавим это поле в базовый шейп НП и построим по полю  <span class="backgreencursiv">School_D</span> классифицированный растр близости.</p>
+
+<img src="Pict_5_19\07_School.png" width="55%"  height="relative"> 
+<br><span class="imgtitle">Рис. 19.37 Один из дополнительных факторов модели - школы</span></p>
+<br>
+
+
+<h3 id="h3_7">19.7 Регрессионный анализ  феномена людности сельских населенных пунктов</h3>
+
+<p>Итак зависимая переменная в нашей модели (т.е., -  исследуемый феномен)  - людность населенных пунктов, а факторы на него влияющие - независимые переменные или так называемые "предикторы" в количестве 11 выглядят следующим образом.<p/>
+
+<ol><li>близость к малым и средним рекам;</li>
+        <li>близость к крупным рекам, озерам и водохранилищам;</li>
+        <li>близость к лесным массивам;</li>
+        <li>удаленность от ветлендов;</li>
+        <li>близость к малым и средним рекам;</li>
+        <li>удаленность от центров районов;</li>
+        <li>удаленность от границ районов;</li>
+        <li>близость к автомобильным дорогам с улучшенным покрытием;</li>
+        <li>близость к железнодорожным платформам;</li>
+        <li>удаленность от вышек мобильной связи;</li>
+        <li>близость к средним школам.</li>
+    </ol>
+
+
+<p>Мы располагаем также данными о положении населенного пункта на рельефе, которые можно включить в модель "просто из любопытства", хотя с позиции того, что называется <span class="cursive">common sense</span> здесь не должно быть каких-то зависимостей, но - почему бы не попробовать, ведь за нас считает компьютер...</p>
+
+<p> По идее Построение "объясняющей"  регрессионной модели «феномен в многомерном пространстве факторов» должно предваряться проверкой совокупности предикторов на возможную корреляцию. Используем <span class="blackbold">Principal Components Analysis|Метод Главных Компонент </span> <span class="monospace">(Spatial Analyst >> Multivariate)</span> пакета <span class="red">ArcMAP10.x</span> для построения <span class="monospace">Correlation  Matrix|Матрицы корреляции</span>, показывающее возможные взаимосвязи между привлеченными переменными. Выходной композитный растр в нашем случае не будет представлять особого интереса, важнее содержание текстового <span class="monospace">TXT</span> файла, в который записываются корреляционные и ковариационные матрицы, а также собственные векторы, процентная дисперсия,  и накопительная дисперсия.</p>
+
+
+
+<p><span class="red">ArcMAP10.x</span> выходные таблицы отображаются во вкладке <span class="monospace">List By Source >> Layer table |таблица слоев</span>. Можно просмотреть файл через Блокнот просто нажав <span class="monospace">F4</span>  на клавиатуре, но "сыром" виде файл мало информативен,  
+поэтому придется  преобразовать его, скопировав и вставив в предварительно открытый лист <span class="blackbold">Excel</span> таблицу <span class="monospace">CORRELATION MATRIX</span>. Все данные окажутся "смятыми" в одну колонку, чтобы их разделить, выделяем колонку с записями (если вы вставляли у левого края листа это будет колонка <span class="greencursiv">A</span>, далее идем в <span class="cursive">Данные >> Текст по столбцам</span>, в строке <span class="cursive">Укажите формат данных</span> выбираем опцию <span class="cursive">фиксированной ширины</span>, нажимаем <span class="monospace">Готово</span> и таблица приобретает нормальный вид . Подглядывая в начало файла <span class="monospace">TXT</span>, где наши переменные перечислены ровно в том порядке, в котором мы забрасывали их в "топку" <span class="blackbold">PCA</span>  заменяем номера в строках и столбцах матрицы на факторы <a href="#08_correationl_matrix">(Рис. 19.38)</a>.</p>
+
+<img src="Pict_5_19\08_correationl_matrix.png" width="75%" height="relative"> 
+<br><span class="imgtitle">Рис. 19.38 Преобразованная в формат Excel таблица CORRELATION MATRIX для 11 независимых переменных модели людности НП</span></p>   
+<p>В матрице корреляции связанными считаются переменные со значением коэффициента более <span class="greencursiv">0,75</span>; очевидно, что в нашей таблице таких пар факторов нет, сколь-нибудь значимую положительную связь демонстрируют только расстояния до железнодорожных платформ и до центров районов.</p>
+
+<p>Обработаем  в <span class="blackbold">Excel</span> подобным образом заключительную таблицу текстового файла отчета <span class="blackbold">PCA</span>  <span class="monospace">PERCENT AND ACCUMULATIVE EIGENVALUES|Проценты и накопительные значения дисперсии</span> -  в зависимости от числа учтенных факторов.</p>
+
+<img src="Pict_5_19\08_pca_accumvakue.png" width="30%" height="relative"> 
+<br><span class="imgtitle">Рис. 19.39 Преобразованная в формат Excel таблица PERCENT AND ACCUMULATIVE EIGENVALUES </span></p> 
+
+<p>Очевидно, что первые 5-6 переменных нашей модели определили <span class="greencursiv">98%</span> дисперсии, вспомним, что для этих же факторов характерно попадание более половины выборки населенных пунктов в первые два класса близости. Геоморфологические факторы мы можем оставить за пределами модели людности, они, что называется, "не про это"</p>
+
+<p>Мы можем также провести предварительную оценку эффективности регрессионного анализа между зависимой переменной и каждым предиктором используя прогнозный инструмент ГИС - <span class="blackbold">scatterplot|точечные графики</span>, который, на наш взгляд в <span class="blue">SAGA GIS</span> реализован наиболее удобным для пользователя образом, поскольку не просто визуализирует зависимости между двумя переменными, но и позволяет видеть вычисленное значение <span class="monospace">коэффициента детерминации R<sup>2</sup></span>, показывающего сколько процентов зависимой переменной может быть объяснено поведением "независимой переменной" в рамках модели линейной регрессии.</p> 
+
+<p>Загрузим  в <span class="blue">SAGA GIS</span> базовый шейп <span class="backgreen">village_p</span>, далее в <span class="monospace">DATA</span> подсветив название файла по правой кнопке мыши переходим: <span class="cursive">Attributes >> Scatterplot</span>, выбираем интересующие нас переменные.</p>  
+
+<img src="Pict_5_19\08_saga_scatterplot.png" width="40%" height="relative"> 
+<br><span class="imgtitle">Рис. 19.40  Диалоговое окно инструмента Scatterplot в SAGA</span></p>
+
+<p>Результат - наглядное изображение характера зависимости (линейная - нелинейная, простая - сложная, прямая - обратная). </p>
+
+<div class="script_01">
+<figure>
+<img src="Pict_5_19\08_pop_town.png" width="250" height="180"></a>
+</figure>
+<figure>
+<img src="Pict_5_19\08_pop_tower.png" width="250" height="180"></a>    
+</figure>
+</div>
+<div class="script_01">
+<figure>
+<img src="Pict_5_19\08_pop_road.png" width="250" height="180"></a>
+</figure>
+<figure>
+<img src="Pict_5_19\08_pop_school.png" width="250" height="180"></a>
+</figure>
+</div>
+<br><span class="imgtitle">Рис. 19.41 Графики зависимости  между людностью НП (population) и различными факторами, в верхнем ряду (слева-направо) - расстояние до центра муниципального района, расстояние до вышек сотовой связи; в нижнем ряду - расстояние до автодорог, расстояние до школы </span></p>
+
+<p>Как можно судить по приведенным графикам зависимость между людностью НП и всеми четырьмя переменными имеет сложный характер (причем в случае с близостью к автодорогам и вышкам сотовой связи - явно нелинейный), кроме того значения  <span class="monospace">коэффициента детерминации R<sup>2</sup></span> ничтожно малы (в диапазоне от <span class="greencursiv">0,19</span> до <span class="greencursiv">1,69%</span>: эти обстоятельства плохо совместимы с возможностью получения достоверной модели.</p>
+    
+<p>Целесообразно начать регрессионный анализ с использования инструмента <span class="blackbold">Ordinary Least Squares|Метод наименьших квадратов</span>, обеспечивающего своего рода диагностическую проверку нашей модели и отвечающему на вопрос "Найдены ли действительно важные переменные для объяснения изучаемого феномена", т.е., в нашем случае - насколько реально подходят привлеченные факторы для выявления причин заброса и запустения сельских населенных пунктов.</p> 
+
+<p>Предметом анализа <span class="blackbold">OLS</span>  является базовый шейп-файл центроидов населенных пунктов <span class="backgreen">village_P</span> с полями значения близости-удаленности объектов факторов.</p>
+
+<div class="script">
+Input Id: ID *поле уникального идентификатора объектов (населенных пунктов),<br>
+Output  File: место сохранения выходного файла "карты невязок",<br>
+Dependent Variables: Population *зависимые переменные в данной модели это число жителей НП, <br>
+Explanatory Variables: *объясняющие" независимые переменные-предикторы, 9 полей - LAKE_D, FOREST_D, WETLAND_D, TOWN_D, BOUNDR_D, ROAD_D, RAILVAY_D, TOWER_D, SCOOL_D,<br>
+Output Report File: - выходной файл отчета включающий диагностику модели, графики и примечания, которые позволяют интерпретировать результаты OLS. 
+</div>
+
+<p>Стандартным результатом работы инструмента <span class="blackbold">OLS</span> является <span class="monospace">Карта невязок модели</span></b>. Разработчики <span class="red">ArcMAP10.x</span> в своем "идеальном мире" полагают, что "<i>... иногда просто посмотрев на карту невязок, можно понять, какой переменной не достает</i>" <a href="https://desktop.arcgis.com/ru/arcmap/10.5/tools/spatial-statistics-toolbox/interpreting-ols-results.htm">Справка по ArcMAP 10.5</a>. Но на самом деле - это не так уж и просто.</p> 
+
+<img src="Pict_5_19\09_ols_map_nevyazki.png" width="55%"  height="relative">
+<br><span class="imgtitle">Рис. 19.42 Карта невязок - выходной шейп инструмента Ordinary Least Squares в ArcMAP 10.x</span></p>  
+
+<p>Красные области – местоположения, где реальные значения (зависимые переменные) больше оцененных в модели, соответственно синие области – местоположения, где реальные значения меньше оцененных в модели. Судя по явному преобладанию желтых пунсонов невязок в нашей модели  (т.е., пере- и недооценок по отношению к прогнозированию значений зависимой переменной - людности населенных пунктов) не так много. Далее обратимся к выходному файлу отчета, сохраненному в формате <span class="monospace">PDF</span>.</p>
+
+<p>Отчет включает несколько таблиц. Первая таблица <span class="monospace">Summary of OLS Results - Model Variables</span></b> содержит оценку роли и вклада каждой независимой переменной модели по восьми параметрам <a href="#09_ols_model_variables">(Рис. 19.43)</a>.</p>
+
+
+<img src="Pict_5_19\09_ols_model_variables.png" width="80%" height="relative"> 
+<br><span class="imgtitle">Рис. 19.43 Скриншот  таблицы Summary of OLS Results - Model Variables</span></p>
+
+<p>Поле (столбец) <span class="cursive">Coefficient|Коэффициент</span> отражает силу и тип отношений между предиктором и зависимой переменной.  Не забываем, что в нашей модели расстояний большие значения метрик означают удаленность, а не близость - это важно для дальнейших рассуждений. Если значение положительно, связь между показателями  прямая (в нашем случае это слабо выраженное отношение между людностью и удаленностью реки и леса). Если коэффициент отрицательный, то мы имеем дело с обратной связью (в данной таблице чем больше расстояние от дорог, вышек сотовой связи и школ, тем меньше людность населенных пунктов).</p>
+
+<p>Поле <span class="cursive">t-Statistic - Тест T</span> используется для оценки значимости факторов-переменных. Нулевая гипотеза означает, что для всех случаев коэффициент близок к нулю (и, соответственно, не подходит для моделирования). Данное поле рекомендуют анализировать совместно со следующим полем <span class="cursive">Probability [b]|Вероятности</span> оценивающим статистическую значимость через устойчивую вероятность; такие значения помечены "звездочкой" (*). В нашей модели высокие значения <span class="cursive">t-Statistic</span> (и звездочка <span class="cursive">Probability</span>) "присвоены" (перечисляем в порядке величины) расстоянию от дорог (<span class="greencursiv">- 6,937763</span>), расстоянию до школ (<span class="greencursiv">- 6,202936</span>), расстоянию от вышек сотовой связи (<span class="greencursiv">- 3,536865</span>) и расстоянию до крупных рек и водохранилищ (<span class="greencursiv">- 3,917301)</span>. Все значения - с отрицательным знаком, т.е., демонстрируют обратную связь - чем больше удаленность, тем ниже людность (и наоборот, близость объектов данного типа "работает" на увеличение людности). Из помеченных "звездочкой" положительных и значимых факторов - удаленность от малых и средних рек и лесных- массивов (т.е., чем дальше от малой реки и леса - тем больше людность. В эту же группу попадает, как ни странно - удаленность от железнодорожных платформ, возможно по той причине, что многие из них действительно удалены от крупных деревень и поселков (железная дорога как скоростная магистраль ведет себя "независимо", иначе бы она проходила прямо по деревенским "большакам"). </p>
+
+<P>Следующая таблица <span class="monospace">PDF</span>-отчета - <span class="cursive">OLS Diagnostics|Оценка Значимости Модели</span> содержит два показателя, <span class="cursive">Joint F-Statistic|Соединенная F-статистика</span> и <span class="cursive">Joint Wald Statistic|Соединенная статистика Вальда</span>, отвечающие за  общую статистическую значимость модели.</p>
+
+<img src="Pict_5_19\09_ols_diagnostic.png"  width="90%" height="relative"> 
+<br><span class="imgtitle">Рис. 19.44 Таблица OLS Diagnostics|Оценка Значимости Модели</span>
+
+<p><span class="cursive">Соединенная F-статистика</span> в данном случае может считаться значимой (<span class="greencursiv">18,740616</span>) поскольку  значок <span class="greencursiv">*</span> имеет и показатель <span class="cursive">Статистика Кенкера (BP)</span>. <span class="cursive">Joint Wald Statistic|Соединенная статистика Вальда</span> используется для определения общей значимости модели  <span class="greencursiv">120,19 </span> при степени свободы - 10. <span class="cursive">Статистика Кенкера (BP)</span> является в этом ряду едва ли не основной, поскольку если ее значения меньше статистически значимых (<span class="greencursiv">p < 0,01</span>), то смоделированные отношения не являются последовательными (либо из-за нестационарности, либо из-за гетероскедастичности).  Последний параметр этой таблицы - <span class="monospace">Статистика Жака-Бера (Jarque-Bera)</span> показывает, являются ли  невязки (полученные/известные зависимые переменные минус предсказанные/ожидаемые значения) нормально распределенными. В данном случае значение самого теста слишком велико <span class="greencursiv">4098563</span>, и, одновременно <span class="monospace">p-значение (вероятность)</span> ничтожно мало и это значит, что модель смещена, а отношение между зависимой переменной и предикторами не являются линейными.</p> 
+
+<p>В третьем разделе выходного отчета приводятся графики, представляющие собой  гистограммы и диаграммы рассеяния для каждой объясняющей переменной  (фактора) и зависимой переменной. Гистограммы выполняют ту е функцию что и точечный график, полученный ранее в <span class="blue">SAGA GIS</span> и показывают, как распределяется каждая переменная. При это <span class="monospace">OLS </span> не требует, чтобы переменные были нормально распределены.</p>
+
+<img src="Pict_5_19\09_ols_gistogram_01.png"  width="100%" height="relative"> 
+<img src="Pict_5_19\09_ols_gistogram_02.png"  width="100%" height="relative"> 
+<br><span class="imgtitle">Рис. 19.45 Гистограммы и диаграммы рассеяния для каждой объясняющей переменной модели, в верхнем ряду (слева-направо): малые и средние реки, крупные реки озера и водохранилища, леса, болота, города-райцентры; в нижнем ряду: границы районов, автодороги, ж/д платформы, вышки сотовой связи и средние школы</span></p>
+
+<p>Каждая диаграмма рассеивания рассеяния отображает отношение между объясняющей переменной и зависимой переменной. Сильные связи проявляются в виде диагоналей и направления наклона указывает, является ли отношение положительным или отрицательным. Мы можем видеть, что важные (значимые) для нашей модели переменные (дороги, вышки сотовой связи, школы и районные центры центров) распределены нормально, хотя и со смещением. Наиболее значительная дисперсия значений свойственна паре переменных - расстоянию до центров и удаленности от границ района. </p>
+
+<p>Четвертый раздел выходного файла отчета представляет гистограмму переоценок и недооценок модели. "Столбики" гистограммы отображают фактическое распределение, а тонкая линия вверху диаграммы показывает форму, которую  приняла бы гистограмма, если остатки имели нормальное распределение. </p>
+
+<img src="Pict_5_19\09_ols_gistogramm_st_res.png"  width="50%" height="relative"> 
+<br><span class="imgtitle">Рис. 19.46 Гистограмма переоценок и недооценок модели</span></p>
+
+<p>В идеале гистограмма  остатков будет соответствовать нормальной кривой, обозначенной выше синим цветом. Если гистограмма выглядит очень непохожей на нормальную кривую, то модель может быть предвзятой. В данном случае мы получили достаточно достоверную модель с небольшим смещением в сторону положительных значений "переоценок".</p>
+
+<p>Заключительный пятый раздел отчета отвечает на вопрос имеются ли проблемы с  зависимостью дисперсии от случайной величины. На диаграмме рассеивания  показано отношение остаточных и прогнозируемых значений модели.</p>
+
+<img src="Pict_5_19\09_ols_residial_vers_predict.png" width="50%" height="relative"><br><span class="imgtitle">Рис. 19.47 Диаграмме рассеивания  показывающая отношение остаточных и прогнозируемых значений модели</span></p>
+
+<p>График невязок показывает распределение пере- и недооценок по отношению к предсказываемой зависимой переменной. Для хорошо специфицированной модели этот график должен представлять случайное распределение, однако в данном случае он имеет выраженную структуру, обнаруживающую присутствие "шаблона кривизны" в модели и это обстоятельство указывает нам, что действительно значимые факторы связаны с изучаемым феноменом нелинейно (см. например на диаграмму рассеивания для пары "людность-расстояние от автодорог".</p>
+
+<p><span class="blue">SAGA GIS</span> также располагает инструментами регрессионного анализа, причем в разных вариантах:<br>
+    когда феномен и предикторы (факторы) - гриды;<br>
+    когда феномен - шейп, а предикторы гриды;<br>
+    когда и феномен, и предикторы - шейпы.<br> 
+
+Для нашего файла векторных точек <span class="backgreen">village_P</span> с извлеченными значениями близости  подходит инструмент <span class="blackbold">Multiple Linear Regression Analysis (Shapes)|Множественный Линейный Регрессионный Анализ (Шейп-файлы)</span></b>; автор <b>O.Conrad (2012)</b>. Из краткого описания следует, что это тот же (уже знакомый нам по <span class="red">ArcMAP10.x</span>) <span class="blackbold">Ordinary Least Squares|Метод наименьших квадратов</span>. Диалоговое окно инструмента включает указание зависимой переменной (феномена) и параметров-предикторов. На выходе таблицы коэффициентов и модели. Опция <span class="cursive">Method|Метод</span>, предлагает четыре варианта <span class="cursive">(include all, forwad, backward, stepwise - по умолчанию)</span>. Вторая опция <span class="cursive">Cross Vaslidation|Перекрестная верификация</span> также предлагает 4 недокументированные варианта <span class="cursive">(none - по умолчанию, leave one out, 2-fold, k-means)</span>.</p>
+
+<img src="Pict_5_19\13_SAGA_multiple linear regression.png" width="50%" height="relative"> 
+<br><span class="imgtitle">Рис. 19.48 Диалоговое окно инструмента Multiple Linear Regression Analysis SAGA</span></p>
+
+<p><span class="monospace">Таблица коэффициентов</span> содержит колонки знакомых значений.  Поле <span class="cursive">REGCOEFF</span> соответствует полю  <span class="cursive">Coefficient(i)</span> <span class="monospace">PDF-отчета</span> <span class="red">ArcMAP10.x</span>, и мы обнаружим здесь практически те же значения для набора факторов-переменных. Поле <span class="backgreencursiv">T</span> - значимость факторов также совпадает по значениям, полученным ранее с цифрами поля <span class="cursive">t-Statistic</span>  <span class="red">ArcMAP10.x</span>.</p>
+
+
+<img src="Pict_5_19\13_SAGA_mlra_table.png"width="50%" height="relative"> 
+<br><span class="imgtitle">Рис. 19.49 Таблица результатов Multiple Linear Regression Analysis SAGA</span></p>
+
+<p> Поле <span class="cursive">R</span> представляет пере- и недооценки прогнозируемых значений. Коэффициент детерминации <span class="cursive">R2</span> и <span class="cursive">R2 ADJ (R-Squared и Adjusted R-Squared в ArcMAP) </span> являются показателями производительности модели. Возможные значения варьируются от 0.0 до 1.0. Значение <span class="cursive">Скорректированного R-Квадрата</span> всегда несколько ниже, нежели <span class="cursive">R-Квадрат</span> поскольку отражает сложность модели (количество переменных),  поэтому гораздо точнее отражает производительность модели. В данной модели значения <span class="cursive">R2 ADJ</span>  даже для тех факторов, которые обнаружили объяснимое влияние на людность НП крайне невысоки. Например значение <span class="cursive">R2 ADJ</span> для фактора близости к средним школам (School_D) <span class="greencursiv">0,0057</span> говорит о том, что данный фактор объясняет порядка <span class="greencursiv">0,57%</span> случаев поведения зависимой переменной. Таким образом <span class="blue">SAGA GIS</span> позволяет осуществить регрессионный анализ с практически аналогичными <span class="red">ArcMAP10.x</span> результатами и параметрами оценок (хотя и более скромным дизайном).</p>
+    <br>
+
+<h3 id="h3_8">19.8 Географически взвешенная регрессия</h3>
+
+<p>Подведем некоторые итоги. Мы выстраивали свою <span class="bolditalic">гипотетическую модель</span> (или исследовательскую гипотезу) на основе так называемого "здравого смысла", а также исходя из наличных и общедоступных данных. Здравый смысл подсказывает нам, что людность населенных пунктов должна быть связана с близостью (или напротив) удаленностью сельского населенного пункта от некоторых природных (река, лес) или искусственных (город, дороги) объектов. Осуществленное нами "многотрудное" моделирование дало некоторые результаты, хотя, возможно, не столь содержательные, как нам бы того хотелось. К скромным достижениям нашей модели можно отнести следующие позиции:</p>
+
+    <ol>
+    <li>Кластерный анализ населенных пунктов с использованием параметров близости к природным и искусственным объектом может быть неплохой основой для их классификации;</li>
+    <li>Метод анализ главных компонент позволяет выявить и "отбраковать"" взаимосвязанные переменные;</li>   
+    <li>Выбранные нами для объяснения людности НП переменные обнаружили различную силу взаимосвязи с изучаемым явлением,  часть из них оказалось  "чуть-чуть" значимой, часть - "ничтожной";</li>
+    <li>Несмотря на низкую производительность модели выявлены два типа отношений между факторами и феноменом - прямая связь, когда увеличение дистанции приводит к увеличению числа жителей и обратная связь, когда с увеличением дистанции от объекта людность НП возрастает.</li>
+    </ol>
+
+<p>Всмотримся повнимательнее в предложенные нами факторы. Близость НП к реке или лесу могла играть существенную роль в средние века (на этапе возникновения села или деревни), и даже еще в конце XIX начале XX в., но позже с появлением транспорта этот фактор мог и не играть значительной роли и уж точно не определял критически людность деревни или села. В прошлом веке это число определялось функцией НП - наибольшее количество людей, как правило, проживало на так называемых центральных усадьбах и "отделениях" колхозов и совхозов, где находились основные производственные мощности (машинотракторные станции, зернохранилища, лесопилки, фермы), строилось новое жилье, осуществлялось бытовое обслуживание и создавались условия для обучения (школы, детские сады) подрастающего поколения.</p> 
+
+<p>Железнодорожные платформы были весьма важны для селян всю вторую половину прошлого века, но сегодня, они используются скорее дачниками, чем собственно сельскими жителями. Вышки сотовой связи не могут влиять на "людность", поскольку здесь причина перепутана со следствием: их устанавливают как раз там, где уже высока плотность населения, и этом смысле это не столько "предиктор", сколько "зависимая переменная".</p>
+
+<p>Автомобильные дороги играли и продолжают играть существенную роль  в системе сельского расселения (определяя, например доступность тех же школ), но в наше время при широком распространении личного автотранспорта люди склонны выбирать не столько ближайшую, сколько более перспективную школу, тем самым "ослабляя" значимость фактора расстояний. С другой стороны, наличие автомобильных трасс напрямую определяет возможности доставки сельскохозяйственной продукции на городские рынки. Следовательно, есть смысл попытаться оптимизировать модель,  после верификации пространственной автокорреляции применить  инструмент <span class="blackbold">Географически взвешенной регрессии|Geographical Weighted Regression</span>.</p>
+
+<img src="Pict_5_19\GWR.png" width="50%"  height="relative"> 
+<br><span class="imgtitle">Рис. 19.50 Скриншот таблицы Geographical Weighted Regression</span></p>
+
+<p>Результаты географически взвешенной регрессии значительно отличаются от обычной регрессии в отношении эффективности модели. Коэффициент детерминации <span class="monospace">R<sup>2</sup></span> увеличился до <span class="greencursiv">0,8</span> и это означает, что приблизительно <span class="greencursiv">80%</span> феномена людности определяются выбранным набором факторов с учетом пространственной неоднородности их распределений. Тем не менее данная модель не слишком состоятельна, и прежде всего потому, что взаимосвязи между феноменом и наиболее влиятельными предикторами, очевидно, не имеют линейного характера. Кроме того полученный результат стимулирует нас  искать другие факторы. Например, можно предположить, что людность НП связана с наличием работы, каковая, в свою очередь зависит от сохранения или развития производственных функций. Тогда в качестве параметров можно было привлечь такие факторы как наличие и численность предприятий агрокомплекса, сохранность и площадь сельскохозяйственных угодий (полей, пастбищ). К сожалению, эти факторы не "лежат на поверхности", и, чтобы их получить, надо осуществить настоящую "добычу данных", используя административный ресурс.</p> 
+
+<p>Заметим также, что некоторые факторы могут потребовать другого представления в рамках модели. Так, для сельскохозяйственных угодий будет важным не "расстояние до ближайшего поля", а скорее общая площадь в пределах окрестностей (размер которых придется специально определять). Собственно, и те факторы, которые мы использовали, могли быть "приготовлены" иначе: вполне возможно, что для учета фактора транспортной доступности полезнее  было оценивать доступность в интервалах времени (получасовая, часовая и т.д.).</p>
+
+<p>Все эти соображения убеждают нас в том, что моделирование - итерационный процесс, и это значит, что практически никогда невозможно получить сразу модель, достоверно и корректно объясняющую интересующее нас явление. Но поскольку наличие прозрачного и воспроизводимого алгоритма - одно из неотъемлемых свойств ГИС-моделирования - каждый шаг, каждая итерация будут приближать нас к желаемому результату.</p>
+<br>
+  
+<footer id="main-footer">Пространственный анализ в геоэкологии &copy; Е.Ю.Колбовский, 2022 </footer>
+</div class="content">
+</body>
+</html>
+
